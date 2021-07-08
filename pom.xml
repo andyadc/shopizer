@@ -34,6 +34,9 @@
         <javax.inject.version>1</javax.inject.version>
         <javax.annotation.version>1.3.2</javax.annotation.version>
         <javax.persistence.version>2.2</javax.persistence.version>
+        <javax.validation.version>2.0.1.Final</javax.validation.version>
+        <javax.servlet.version>3.1.0</javax.servlet.version>
+
         <commons-lang.version>3.12.0</commons-lang.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <mysql-driver.version>8.0.25</mysql-driver.version>
@@ -64,6 +67,17 @@
                 <version>${javax.persistence.version}</version>
             </dependency>
             <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>${javax.validation.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${javax.servlet.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang.version}</version>
@@ -86,13 +100,20 @@
     <dependencies>
 
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
         </dependency>
-
         <dependency>
             <groupId>javax.persistence</groupId>
             <artifactId>javax.persistence-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
         </dependency>
 
     </dependencies>
