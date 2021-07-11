@@ -9,8 +9,6 @@ import java.util.Date;
 
 /**
  * Shipping quote received from external shipping quote module or calculated internally
- *
- * @author c.samson
  */
 @Entity
 @Table(name = "SHIPPING_QUOTE")
