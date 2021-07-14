@@ -1,6 +1,7 @@
 package com.salesmanager.core.model.reference.geozone;
 
 import com.salesmanager.core.constants.SchemaConstant;
+import com.salesmanager.core.model.common.description.Description;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;

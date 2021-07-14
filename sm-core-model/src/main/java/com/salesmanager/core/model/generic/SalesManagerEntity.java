@@ -1,5 +1,7 @@
 package com.salesmanager.core.model.generic;
 
+import org.hibernate.Hibernate;
+
 import java.io.Serializable;
 import java.text.Collator;
 import java.util.Locale;
@@ -36,7 +38,6 @@ public abstract class SalesManagerEntity<K extends Serializable & Comparable<K>,
     public boolean isNew() {
         return getId() == null;
     }
-
 
     @SuppressWarnings("unchecked")
     @Override

@@ -2,6 +2,7 @@ package com.salesmanager.core.model.reference.country;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.salesmanager.core.constants.SchemaConstant;
+import com.salesmanager.core.model.common.description.Description;
 import com.salesmanager.core.model.reference.language.Language;
 
 import javax.persistence.Entity;

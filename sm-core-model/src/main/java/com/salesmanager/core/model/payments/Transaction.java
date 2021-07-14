@@ -40,11 +40,7 @@ import java.util.Map;
 @Table(name = "SM_TRANSACTION")
 public class Transaction extends SalesManagerEntity<Long, Transaction> implements Serializable, Auditable, JSONAware {
 
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(Transaction.class);
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

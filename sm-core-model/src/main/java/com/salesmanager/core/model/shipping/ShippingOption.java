@@ -11,13 +11,9 @@ public class ShippingOption implements Serializable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ShippingOption.class);
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 1L;
 	private BigDecimal optionPrice;
 	private Long shippingQuoteOptionId;
-
 
 	private String optionName = null;
 	private String optionCode = null;
@@ -31,9 +27,7 @@ public class ShippingOption implements Serializable {
 
 	private String estimatedNumberOfDays;
 
-
 	public BigDecimal getOptionPrice() {
-
 		if (optionPrice == null && !StringUtils.isBlank(this.getOptionPriceText())) {//if price text only is available, try to parse it
 			try {
 				this.optionPrice = new BigDecimal(this.getOptionPriceText());
@@ -41,7 +35,6 @@ public class ShippingOption implements Serializable {
 				LOGGER.error("Can't convert price text " + this.getOptionPriceText() + " to big decimal");
 			}
 		}
-
 		return optionPrice;
 	}
 
