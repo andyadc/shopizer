@@ -17,6 +17,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.andyadc</groupId>
+            <artifactId>sm-core-model</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
         <!-- jpa, crud repository -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
