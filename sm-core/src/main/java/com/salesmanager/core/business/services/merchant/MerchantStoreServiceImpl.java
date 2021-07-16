@@ -8,7 +8,7 @@ import com.salesmanager.core.business.services.common.generic.SalesManagerEntity
 import com.salesmanager.core.model.common.GenericEntityList;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.merchant.MerchantStoreCriteria;
-import org.jsoup.helper.Validate;
+import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -104,7 +104,6 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 	public MerchantStore getParent(String code) throws ServiceException {
 		Validate.notNull(code, "MerchantStore code cannot be null");
 
-		
 		//get it
 		MerchantStore storeModel = this.getByCode(code);
 		
@@ -122,7 +121,6 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 	
 		return merchantRepository.getById(storeModel.getParent().getId());
 	}
-
 
 	@Override
 	public List<MerchantStore> findAllStoreNames(String code) throws ServiceException {
@@ -144,30 +142,21 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 			name = storeName.get();
 		}
 
-		
 		MerchantStore store = getByCode(code);//if exist
 		Optional<Integer> id = Optional.ofNullable(store.getId());
 
-		
 		Pageable pageRequest = PageRequest.of(page, count);
 
-
 		return pageableMerchantRepository.listByGroup(code, id.get(), name, pageRequest);
-		
-		
 	}
 
 	@Override
 	public boolean isStoreInGroup(String code) throws ServiceException{
-		
 		MerchantStore store = getByCode(code);//if exist
 		Optional<Integer> id = Optional.ofNullable(store.getId());
 		
 		List<MerchantStore> stores = merchantRepository.listByGroup(code, id.get());
-		
-		
+
 		return stores.size() > 0;
 	}
-
-
 }

@@ -1,5 +1,9 @@
 package com.salesmanager.core.business.services.search;
 
+import com.andyadc.shopizer.search.services.Facet;
+import com.andyadc.shopizer.search.services.SearchHit;
+import com.andyadc.shopizer.search.services.SearchRequest;
+import com.andyadc.shopizer.search.services.SearchResponse;
 import com.google.gson.JsonNull;
 import com.salesmanager.core.business.constants.Constants;
 import com.salesmanager.core.business.exception.ServiceException;
@@ -14,10 +18,6 @@ import com.salesmanager.core.model.search.IndexProduct;
 import com.salesmanager.core.model.search.SearchEntry;
 import com.salesmanager.core.model.search.SearchFacet;
 import com.salesmanager.core.model.search.SearchKeywords;
-import com.shopizer.search.services.Facet;
-import com.shopizer.search.services.SearchHit;
-import com.shopizer.search.services.SearchRequest;
-import com.shopizer.search.services.SearchResponse;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -35,26 +35,23 @@ import java.util.Map;
 import java.util.Set;
 
 
-
 @Service("productSearchService")
 public class SearchServiceImpl implements SearchService {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(SearchServiceImpl.class);
-	
-	
+
 	private final static String PRODUCT_INDEX_NAME = "product";
 	private final static String UNDERSCORE = "_";
 	private final static String INDEX_PRODUCTS = "INDEX_PRODUCTS";
 
 	@Inject
-	private com.shopizer.search.services.SearchService searchService;
+	private com.andyadc.shopizer.search.services.SearchService searchService;
 	
 	@Inject
 	private PricingService pricingService;
 	
 	@Inject
 	private CoreConfiguration configuration;
-	
 
 	public void initService() {
 		searchService.initService();
@@ -133,7 +130,6 @@ public class SearchServiceImpl implements SearchService {
 				index.setTags(tagsList);
 			}
 
-			
 			Set<Category> categories = product.getCategories();
 			if(!CollectionUtils.isEmpty(categories)) {
 				List<String> categoryList = new ArrayList<String>();
@@ -171,15 +167,10 @@ public class SearchServiceImpl implements SearchService {
 				LOGGER.error("Cannot delete index for product id [" + product.getId() + "], ",e);
 			}
 		}
-	
 	}
-	
 
 	public SearchKeywords searchForKeywords(String collectionName, String word, int entriesCount) throws ServiceException {
-		
-     		
 		try {
-
 			SearchResponse response = searchService.searchAutoComplete(collectionName, word, entriesCount);
 			
 			SearchKeywords keywords = new SearchKeywords();
@@ -188,25 +179,17 @@ public class SearchServiceImpl implements SearchService {
 			}
 			
 			return keywords;
-			
 		} catch (Exception e) {
 			LOGGER.error("Error while searching keywords " + word,e);
 			throw new ServiceException(e);
 		}
-
-		
 	}
-	
 
 	public com.salesmanager.core.model.search.SearchResponse search(MerchantStore store, String languageCode, String term, int entriesCount, int startIndex) throws ServiceException {
-		
-
 		try {
-			
 			StringBuilder collectionName = new StringBuilder();
 			collectionName.append(PRODUCT_INDEX_NAME).append(UNDERSCORE).append(languageCode).append(UNDERSCORE).append(store.getCode().toLowerCase());
-			
-			
+
 			SearchRequest request = new SearchRequest();
 			request.addCollection(collectionName.toString());
 			request.setSize(entriesCount);
@@ -227,7 +210,6 @@ public class SearchServiceImpl implements SearchService {
 				
 				if(!CollectionUtils.isEmpty(hits)) {
 					for(SearchHit hit : hits) {
-						
 						SearchEntry entry = new SearchEntry();
 		
 						//Map<String,Object> metaEntries = hit.getMetaEntries();
@@ -275,43 +257,33 @@ public class SearchServiceImpl implements SearchService {
 						for(String key : facets.keySet()) {
 							
 							Facet f = facets.get(key);
-							List<com.shopizer.search.services.Entry> ent = f.getEntries();
+							List<com.andyadc.shopizer.search.services.Entry> ent = f.getEntries();
 							
 							//List<FacetEntry> f = facets.get(key);
 
 							List<SearchFacet> fs = searchFacets.computeIfAbsent(key, k -> new ArrayList<>());
 
-							for(com.shopizer.search.services.Entry facetEntry : ent) {
-							
+							for(com.andyadc.shopizer.search.services.Entry facetEntry : ent) {
 								SearchFacet searchFacet = new SearchFacet();
 								searchFacet.setKey(facetEntry.getName());
 								searchFacet.setName(facetEntry.getName());
 								searchFacet.setCount(facetEntry.getCount());
 								
 								fs.add(searchFacet);
-							
 							}
-							
 						}
 						
 						resp.setFacets(searchFacets);
-					
 					}
 				
 				}
 			}
-			
-			
-			
+
 			return resp;
-			
-			
 		} catch (Exception e) {
 			LOGGER.error("Error while searching keywords " + term,e);
 			throw new ServiceException(e);
 		}
-		
 	}
 	
 }
-

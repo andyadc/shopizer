@@ -11,19 +11,19 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 @Configuration
-@EnableAsync
 @EnableScheduling
+@EnableAsync
 public class AsyncConfig implements AsyncConfigurer {
 
-    private static final int EXECUTOR_SERVICE_NUMBER_THREADS = 5;
+  private static final int EXECUTOR_SERVICE_NUMBER_THREADS = 5;
 
-    @Override
-    public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return new SimpleAsyncUncaughtExceptionHandler();
-    }
+  @Override
+  public Executor getAsyncExecutor() {
+    return Executors.newFixedThreadPool(EXECUTOR_SERVICE_NUMBER_THREADS);
+  }
 
-    @Override
-    public Executor getAsyncExecutor() {
-        return Executors.newFixedThreadPool(EXECUTOR_SERVICE_NUMBER_THREADS);
-    }
+  @Override
+  public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+    return new SimpleAsyncUncaughtExceptionHandler();
+  }
 }

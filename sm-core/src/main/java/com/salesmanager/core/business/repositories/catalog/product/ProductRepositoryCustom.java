@@ -12,8 +12,6 @@ import java.util.Locale;
 import java.util.Set;
 
 public interface ProductRepositoryCustom {
-
-
 		ProductList listByStore(MerchantStore store, Language language,
 			ProductCriteria criteria);
 

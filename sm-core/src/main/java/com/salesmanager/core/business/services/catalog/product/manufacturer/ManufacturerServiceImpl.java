@@ -1,6 +1,5 @@
 package com.salesmanager.core.business.services.catalog.product.manufacturer;
 
-
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.repositories.catalog.product.manufacturer.ManufacturerRepository;
 import com.salesmanager.core.business.repositories.catalog.product.manufacturer.PageableManufacturerRepository;
@@ -10,7 +9,7 @@ import com.salesmanager.core.model.catalog.product.manufacturer.Manufacturer;
 import com.salesmanager.core.model.catalog.product.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.reference.language.Language;
-import org.jsoup.helper.Validate;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -22,18 +21,14 @@ import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.List;
 
-
-
 @Service("manufacturerService")
 public class ManufacturerServiceImpl extends SalesManagerEntityServiceImpl<Long, Manufacturer>
     implements ManufacturerService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ManufacturerServiceImpl.class);
-
+  private final ManufacturerRepository manufacturerRepository;
   @Inject
   private PageableManufacturerRepository pageableManufacturerRepository;
-  
-  private final ManufacturerRepository manufacturerRepository;
 
   @Inject
   public ManufacturerServiceImpl(ManufacturerRepository manufacturerRepository) {
@@ -52,7 +47,6 @@ public class ManufacturerServiceImpl extends SalesManagerEntityServiceImpl<Long,
     return manufacturerRepository.countByProduct(manufacturer.getId());
     // .getCountManufAttachedProducts( manufacturer );
   }
-
 
   @Override
   public List<Manufacturer> listByStore(MerchantStore store, Language language)

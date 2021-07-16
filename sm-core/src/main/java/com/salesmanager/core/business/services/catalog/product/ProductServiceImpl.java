@@ -1,6 +1,5 @@
 package com.salesmanager.core.business.services.catalog.product;
 
-
 import com.salesmanager.core.business.exception.ServiceException;
 import com.salesmanager.core.business.repositories.catalog.product.ProductRepository;
 import com.salesmanager.core.business.services.catalog.category.CategoryService;
@@ -117,7 +116,6 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		Set ids = new HashSet(categoryIds);
 		return productRepository.getProductsListByCategories(ids);
-
 	}
 
 	@Override
@@ -141,7 +139,6 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		Set<Long> ids = new HashSet(categoryIds);
 		return productRepository.getProductsListByCategories(ids, language);
-
 	}
 
 	@Override
@@ -174,7 +171,6 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	@Override
 	public List<Product> getProductsForLocale(Category category, Language language, Locale locale)
 			throws ServiceException {
-
 		if (category == null) {
 			throw new ServiceException("The category is null");
 		}
@@ -184,9 +180,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		List<Category> categories = categoryService.getListByLineage(category.getMerchantStore(), lineage.toString());
 		Set<Long> categoryIds = new HashSet<Long>();
 		for (Category c : categories) {
-
 			categoryIds.add(c.getId());
-
 		}
 
 		categoryIds.add(category.getId());
@@ -200,13 +194,11 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 
 	@Override
 	public ProductList listByStore(MerchantStore store, Language language, ProductCriteria criteria) {
-
 		return productRepository.listByStore(store, language, criteria);
 	}
 
 	@Override
 	public List<Product> listByStore(MerchantStore store) {
-
 		return productRepository.listByStore(store);
 	}
 

@@ -43,7 +43,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 		return get(productId, null);
 	}
 
-
 	@Override
 	public Product getProductWithOnlyMerchantStoreById(Long productId) {
 		final String hql = "select distinct p from Product as p " +
@@ -63,12 +62,10 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
 
 	private Product get(Long productId, MerchantStore merchant) {
-
 		try {
-
 			Integer merchantId = null;
 			Integer parentId = null;
-			List<Integer> ids = new ArrayList<Integer>();
+			List<Integer> ids = new ArrayList<>();
 
 			StringBuilder qs = new StringBuilder();
 			/*qs.append("select distinct p from Product as p ");
@@ -135,14 +132,11 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 		} catch (NoResultException ers) {
 			return null;
 		}
-
 	}
 
 	@Override
 	public Product getByCode(String productCode, Language language) {
-
 		try {
-
 			StringBuilder qs = new StringBuilder();
 			qs.append("select distinct p from Product as p ");
 			qs.append("join fetch p.availabilities pa ");
@@ -184,18 +178,14 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 			q.setParameter("lang", language.getId());
 
 			return (Product) q.getSingleResult();
-
 		} catch (NoResultException ers) {
 			return null;
 		}
-
 	}
 	
 	@Override
 	public Product getByCode(String productCode, MerchantStore store) {
-
 		try {
-
 			StringBuilder qs = new StringBuilder();
 			qs.append("select distinct p from Product as p ");
 			qs.append("join fetch p.descriptions pd ");
@@ -216,7 +206,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 			qs.append("left join fetch manuf.descriptions manufd ");
 			qs.append("left join fetch p.type type ");
 
-
 			qs.append("where p.sku=:code and pm.id=:id");
 
 			String hql = qs.toString();
@@ -230,11 +219,9 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 		} catch (NoResultException ers) {
 			return null;
 		}
-
 	}
 
 	public Product getByFriendlyUrl(MerchantStore store, String seUrl, Locale locale) {
-
 		List<String> regionList = new ArrayList<>();
 		regionList.add("*");
 		regionList.add(locale.getCountry());

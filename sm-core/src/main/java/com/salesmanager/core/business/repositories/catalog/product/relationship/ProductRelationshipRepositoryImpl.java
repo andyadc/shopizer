@@ -1,6 +1,6 @@
 package com.salesmanager.core.business.repositories.catalog.product.relationship;
 
-import com.google.api.client.util.Lists;
+import com.google.common.collect.Lists;
 import com.salesmanager.core.model.catalog.product.Product;
 import com.salesmanager.core.model.catalog.product.relationship.ProductRelationship;
 import com.salesmanager.core.model.merchant.MerchantStore;
@@ -109,7 +109,7 @@ public class ProductRelationshipRepositoryImpl implements ProductRelationshipRep
   private static final String HQL_GET_PRODUCT_RELATIONSHIP_BY_STORE_ID =
       "select distinct pr from ProductRelationship as pr "
           + "where pr.store.id=:store "
-          + "and pr.product=null";
+          + "and pr.product="+null;
   private static final String HQL_GET_PRODUCT_RELATIONSHIP_BY_CODE_AND_STORE_ID =
       "select distinct pr from ProductRelationship as pr "
           + "left join fetch pr.product p "
@@ -172,7 +172,6 @@ public class ProductRelationshipRepositoryImpl implements ProductRelationshipRep
         .collect(Collectors.toMap(ProductRelationship::getCode, p -> p, (p, q) -> p));
     return Lists.newArrayList(relationMap.values());
   }
-
 
   @Override
   @SuppressWarnings("unchecked")

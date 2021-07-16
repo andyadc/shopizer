@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.services.shipping;
 
+import com.andyadc.shopizer.search.utils.DateUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salesmanager.core.business.constants.ShippingConstants;
 import com.salesmanager.core.business.exception.ServiceException;
@@ -37,7 +38,6 @@ import com.salesmanager.core.modules.integration.shipping.model.Packaging;
 import com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule;
 import com.salesmanager.core.modules.integration.shipping.model.ShippingQuotePrePostProcessModule;
 import com.salesmanager.core.modules.utils.Encryption;
-import com.shopizer.search.utils.DateUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -59,21 +59,17 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-
 @Service("shippingService")
 public class ShippingServiceImpl implements ShippingService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ShippingServiceImpl.class);
-	
-	
+
 	private final static String SUPPORTED_COUNTRIES = "SUPPORTED_CNTR";
 	private final static String SHIPPING_MODULES = "SHIPPING";
 	private final static String SHIPPING_DISTANCE = "shippingDistanceModule";
 
-	
 	@Inject
 	private MerchantConfigurationService merchantConfigurationService;
-	
 
 	@Inject
 	private PricingService pricingService;

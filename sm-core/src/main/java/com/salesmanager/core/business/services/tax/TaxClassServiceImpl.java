@@ -5,7 +5,7 @@ import com.salesmanager.core.business.repositories.tax.TaxClassRepository;
 import com.salesmanager.core.business.services.common.generic.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.model.merchant.MerchantStore;
 import com.salesmanager.core.model.tax.taxclass.TaxClass;
-import org.jsoup.helper.Validate;
+import org.apache.commons.lang3.Validate;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -41,10 +41,8 @@ public class TaxClassServiceImpl extends SalesManagerEntityServiceImpl<Long, Tax
 	
 	@Override
 	public void delete(TaxClass taxClass) throws ServiceException {
-		
 		TaxClass t = getById(taxClass.getId());
 		super.delete(t);
-		
 	}
 	
 	@Override
@@ -56,9 +54,7 @@ public class TaxClassServiceImpl extends SalesManagerEntityServiceImpl<Long, Tax
 	public boolean exists(String code, MerchantStore store) throws ServiceException {
 		Validate.notNull(code, "TaxClass code cannot be empty");
 		Validate.notNull(store, "MerchantStore cannot be null");
-		
 		return taxClassRepository.findByStoreAndCode(store.getId(), code) != null;
-
 	}
 	
 	@Override
@@ -70,7 +66,4 @@ public class TaxClassServiceImpl extends SalesManagerEntityServiceImpl<Long, Tax
 		}
 		return taxClass;
 	}
-
-	
-
 }
