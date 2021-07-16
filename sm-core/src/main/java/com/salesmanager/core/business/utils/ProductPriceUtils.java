@@ -84,7 +84,6 @@ public class ProductPriceUtils {
 	 */
 	public FinalPrice getFinalProductPrice(Product product, List<ProductAttribute> attributes) {
 
-
 		FinalPrice finalPrice = calculateFinalPrice(product);
 		
 		//attributes

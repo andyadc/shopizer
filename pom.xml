@@ -23,6 +23,7 @@
         <module>sm-core-modules</module>
         <module>sm-shop</module>
         <module>sm-shop-model</module>
+        <module>shopizer-search</module>
     </modules>
 
     <properties>
@@ -39,6 +40,7 @@
 
         <commons-lang.version>3.12.0</commons-lang.version>
         <commons-collections.version>4.4</commons-collections.version>
+        <commons-validator.version>1.7</commons-validator.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <json-simple.version>1.1.1</json-simple.version>
 
@@ -86,6 +88,17 @@
                 <version>${commons-collections.version}</version>
             </dependency>
             <dependency>
+                <groupId>commons-validator</groupId>
+                <artifactId>commons-validator</artifactId>
+                <version>${commons-validator.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-collections</groupId>
+                        <artifactId>commons-collections</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
                 <version>${mapstruct.version}</version>
@@ -95,11 +108,43 @@
                 <artifactId>json-simple</artifactId>
                 <version>${json-simple.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>30.1.1-jre</version>
+            </dependency>
 
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql-driver.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.web</groupId>
+                <artifactId>jstl-impl</artifactId>
+                <version>1.2</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>servlet-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.servlet.jsp</groupId>
+                        <artifactId>jsp-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tiles</groupId>
+                <artifactId>tiles-jsp</artifactId>
+                <version>3.0.8</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>servlet-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
         </dependencies>
@@ -131,6 +176,11 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
 
         <dependency>
