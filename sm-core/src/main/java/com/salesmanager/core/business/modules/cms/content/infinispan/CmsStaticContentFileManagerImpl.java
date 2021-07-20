@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.salesmanager.core.business.modules.cms.content.infinispan;
 
 import com.salesmanager.core.business.constants.Constants;
@@ -30,18 +27,11 @@ import java.util.Optional;
 
 /**
  * Manages - Images - Files (js, pdf, css...) on infinispan
- * 
- * @author Umesh Awasthi
- * @since 1.2
- *
  */
 public class CmsStaticContentFileManagerImpl
 		// implements FilePut,FileGet,FileRemove
 		implements ContentAssetsManager {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(CmsStaticContentFileManagerImpl.class);
 	private static CmsStaticContentFileManagerImpl fileManager = null;
@@ -52,7 +42,6 @@ public class CmsStaticContentFileManagerImpl
 	private CacheManager cacheManager;
 
 	public void stopFileManager() {
-
 		try {
 			cacheManager.getManager().stop();
 			LOGGER.info("Stopping CMS");
@@ -63,20 +52,15 @@ public class CmsStaticContentFileManagerImpl
 
 	@PostConstruct
 	void init() {
-
 		this.rootName = cacheManager.getRootName();
 		LOGGER.info("init " + getClass().getName() + " setting root" + this.rootName);
-
 	}
 
 	public static CmsStaticContentFileManagerImpl getInstance() {
-
 		if (fileManager == null) {
 			fileManager = new CmsStaticContentFileManagerImpl();
 		}
-
 		return fileManager;
-
 	}
 
 	/**
@@ -113,21 +97,17 @@ public class CmsStaticContentFileManagerImpl
 					"CmsStaticContentFileManagerInfinispanImpl has a null cacheManager.getTreeCache()");
 		}
 		try {
-
 			String nodePath = this.getNodePath(merchantStoreCode, inputStaticContentData.getFileContentType());
 
 			final Node<String, Object> merchantNode = this.getNode(nodePath);
 
 			merchantNode.put(inputStaticContentData.getFileName(),
 					IOUtils.toByteArray(inputStaticContentData.getFile()));
-
 			LOGGER.info("Content data added successfully.");
 		} catch (final Exception e) {
 			LOGGER.error("Error while saving static content data", e);
 			throw new ServiceException(e);
-
 		}
-
 	}
 
 	/**
@@ -161,18 +141,13 @@ public class CmsStaticContentFileManagerImpl
 					"CmsStaticContentFileManagerInfinispanImpl has a null cacheManager.getTreeCache()");
 		}
 		try {
-
 			for (final InputContentFile inputStaticContentData : inputStaticContentDataList) {
-
 				String nodePath = this.getNodePath(merchantStoreCode, inputStaticContentData.getFileContentType());
 				final Node<String, Object> merchantNode = this.getNode(nodePath);
 				merchantNode.put(inputStaticContentData.getFileName(),
 						IOUtils.toByteArray(inputStaticContentData.getFile()));
-
 			}
-
 			LOGGER.info("Total {} files added successfully.", inputStaticContentDataList.size());
-
 		} catch (final Exception e) {
 			LOGGER.error("Error while saving content image", e);
 			throw new ServiceException(e);
@@ -203,7 +178,6 @@ public class CmsStaticContentFileManagerImpl
 		OutputContentFile outputStaticContentData = new OutputContentFile();
 		InputStream input = null;
 		try {
-
 			String nodePath = this.getNodePath(merchantStoreCode, fileContentType);
 
 			final Node<String, Object> merchantNode = this.getNode(nodePath);
@@ -214,7 +188,6 @@ public class CmsStaticContentFileManagerImpl
 				LOGGER.warn("file byte is null, no file found");
 				return null;
 			}
-
 			input = new ByteArrayInputStream(fileBytes);
 
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -235,13 +208,11 @@ public class CmsStaticContentFileManagerImpl
 	@Override
 	public List<OutputContentFile> getFiles(final String merchantStoreCode, Optional<String> path, final FileContentType staticContentType)
 			throws ServiceException {
-
 		if (cacheManager.getTreeCache() == null) {
 			throw new ServiceException("CmsStaticContentFileManagerInfinispan has a null cacheManager.getTreeCache()");
 		}
 		List<OutputContentFile> images = new ArrayList<OutputContentFile>();
 		try {
-
 			FileNameMap fileNameMap = URLConnection.getFileNameMap();
 			String nodePath = this.getNodePath(merchantStoreCode, staticContentType);
 
@@ -264,38 +235,29 @@ public class CmsStaticContentFileManagerImpl
 				contentImage.setFileName(key);
 
 				images.add(contentImage);
-
 			}
-
 		} catch (final Exception e) {
 			LOGGER.error("Error while fetching file for {} merchant ", merchantStoreCode);
 			throw new ServiceException(e);
 		}
-
 		return images;
-
 	}
 
 	@Override
 	public void removeFile(final String merchantStoreCode, final FileContentType staticContentType,
 			final String fileName, Optional<String> path) throws ServiceException {
-
 		if (cacheManager.getTreeCache() == null) {
 			throw new ServiceException("CmsStaticContentFileManagerInfinispan has a null cacheManager.getTreeCache()");
 		}
-
 		try {
-
 			String nodePath = this.getNodePath(merchantStoreCode, staticContentType);
 			final Node<String, Object> merchantNode = this.getNode(nodePath);
 
 			merchantNode.remove(fileName);
-
 		} catch (final Exception e) {
 			LOGGER.error("Error while fetching file for {} merchant ", merchantStoreCode);
 			throw new ServiceException(e);
 		}
-
 	}
 
 	/**
@@ -351,10 +313,8 @@ public class CmsStaticContentFileManagerImpl
 		nodePath.append(storeCode).append("/").append(contentType.name());
 
 		return nodePath.toString();
-
 	}
-	
-	
+
 	/**
 	 * Returns a folder path so it can be used as base node
 	 * @param storeCode
@@ -367,10 +327,8 @@ public class CmsStaticContentFileManagerImpl
 		nodePath.append(storeCode).append("/").append(contentType.name());
 
 		return nodePath.toString();*/
-		
-		
-		return null;
 
+		return null;
 	}
 
 	public CacheManager getCacheManager() {

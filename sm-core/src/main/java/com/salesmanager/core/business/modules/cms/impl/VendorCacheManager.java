@@ -7,32 +7,26 @@ import org.slf4j.LoggerFactory;
 
 public class VendorCacheManager {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(VendorCacheManager.class);
-  private EmbeddedCacheManager manager = null;
-  private static VendorCacheManager vendorCacheManager = null;
+    private static final Logger LOGGER = LoggerFactory.getLogger(VendorCacheManager.class);
+    private static VendorCacheManager vendorCacheManager = null;
+    private EmbeddedCacheManager manager = null;
 
-  private VendorCacheManager() {
-
-    try {
-      manager = new DefaultCacheManager();
-    } catch (Exception e) {
-      LOGGER.error("Cannot start manager " + e.toString());
+    private VendorCacheManager() {
+        try {
+            manager = new DefaultCacheManager();
+        } catch (Exception e) {
+            LOGGER.error("Cannot start manager " + e.toString());
+        }
     }
 
-  }
-
-
-  public static VendorCacheManager getInstance() {
-    if (vendorCacheManager == null) {
-      vendorCacheManager = new VendorCacheManager();
-
+    public static VendorCacheManager getInstance() {
+        if (vendorCacheManager == null) {
+            vendorCacheManager = new VendorCacheManager();
+        }
+        return vendorCacheManager;
     }
-    return vendorCacheManager;
-  }
 
-
-  public EmbeddedCacheManager getManager() {
-    return manager;
-  }
-
+    public EmbeddedCacheManager getManager() {
+        return manager;
+    }
 }

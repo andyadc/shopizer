@@ -17,17 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
 public class PayPalRestPayment implements PaymentModule {
-	
 
 	@Override
 	public void validateModuleConfiguration(
 			IntegrationConfiguration integrationConfiguration,
 			MerchantStore store) throws IntegrationException {
-		
-		
-		List<String> errorFields = null;
+
+        List<String> errorFields = null;
 		
 		//validate integrationKeys['account']
 		Map<String,String> keys = integrationConfiguration.getIntegrationKeys();

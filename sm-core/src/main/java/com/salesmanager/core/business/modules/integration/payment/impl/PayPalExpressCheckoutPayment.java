@@ -59,7 +59,6 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PayPalExpressCheckoutPayment.class);
 	
-	
 	@Inject
 	private PricingService pricingService;
 	
@@ -70,7 +69,6 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 	public void validateModuleConfiguration(
 			IntegrationConfiguration integrationConfiguration,
 			MerchantStore store) throws IntegrationException {
-		
 		
 		List<String> errorFields = null;
 		
@@ -94,16 +92,12 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 			}
 			errorFields.add("signature");
 		}
-		
 
 		if(errorFields!=null) {
 			IntegrationException ex = new IntegrationException(IntegrationException.ERROR_VALIDATION_SAVE);
 			ex.setErrorFields(errorFields);
 			throw ex;
-			
 		}
-		
-		
 	}
 
 	@Override
@@ -121,13 +115,10 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
 
-		
 		com.salesmanager.core.model.payments.PaypalPayment paypalPayment = (com.salesmanager.core.model.payments.PaypalPayment)payment;
 		Validate.notNull(paypalPayment.getPaymentToken(), "A paypal payment token is required to process this transaction");
 		
 		return processTransaction(store, customer, items, amount, paypalPayment, configuration, module);
-		
-		
 	}
 
 /*	@Override
@@ -151,18 +142,14 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 			Validate.notNull(configuration, "Configuration must not be null");
 			Validate.notNull(payment, "Payment must not be null");
 			Validate.notNull(summary, "OrderTotalSummary must not be null");
-		
 
 		try {
-			
-			
 			PaymentDetailsType paymentDetails = new PaymentDetailsType();
 			if(configuration.getIntegrationKeys().get("transaction").equalsIgnoreCase(TransactionType.AUTHORIZECAPTURE.name())) {
 				paymentDetails.setPaymentAction(urn.ebay.apis.eBLBaseComponents.PaymentActionCodeType.SALE);
 			} else {
 				paymentDetails.setPaymentAction(urn.ebay.apis.eBLBaseComponents.PaymentActionCodeType.AUTHORIZATION);
 			}
-			
 
 			List<PaymentDetailsItemType> lineItems = new ArrayList<PaymentDetailsItemType>();
 			
