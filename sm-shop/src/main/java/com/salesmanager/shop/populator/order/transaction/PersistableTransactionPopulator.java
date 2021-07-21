@@ -1,5 +1,6 @@
 package com.salesmanager.shop.populator.order.transaction;
 
+import com.andyadc.shopizer.search.utils.DateUtil;
 import com.salesmanager.core.business.exception.ConversionException;
 import com.salesmanager.core.business.services.catalog.product.PricingService;
 import com.salesmanager.core.business.services.order.OrderService;
@@ -11,7 +12,6 @@ import com.salesmanager.core.model.payments.Transaction;
 import com.salesmanager.core.model.payments.TransactionType;
 import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.shop.model.order.transaction.PersistableTransaction;
-import com.shopizer.search.utils.DateUtil;
 import org.apache.commons.lang3.Validate;
 
 public class PersistableTransactionPopulator extends AbstractDataPopulator<PersistableTransaction, Transaction> {

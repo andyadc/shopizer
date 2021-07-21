@@ -18,75 +18,52 @@ import javax.ws.rs.core.MediaType;
 
 @ControllerAdvice("com.salesmanager.shop.admin")
 public class AdminErrorController {
-	
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(AdminErrorController.class);
-	
-    
+
 	@ExceptionHandler(Exception.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 	@Produces({MediaType.APPLICATION_JSON})
 	public ModelAndView handleException(Exception ex) {
-		
-		LOGGER.error("Error page controller",ex);
+		LOGGER.error("Error page controller", ex);
 
 		ModelAndView model = null;
-		if(ex instanceof AccessDeniedException) {
-			
+		if (ex instanceof AccessDeniedException) {
 			model = new ModelAndView("error/access_denied");
-			
 		} else {
-			
 			model = new ModelAndView("error/generic_error");
 			model.addObject("stackError", ExceptionUtils.getStackTrace(ex));
 			model.addObject("errMsg", ex.getMessage());
-			
 		}
-
 		return model;
- 
 	}
-	
 
-	
 	@ExceptionHandler(RuntimeException.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 	@Produces({MediaType.APPLICATION_JSON})
 	public ModelAndView handleRuntimeException(Exception ex) {
-		
-		LOGGER.error("Error page controller",ex);
-		
+		LOGGER.error("Error page controller", ex);
 		ModelAndView model = null;
 
-			
 		model = new ModelAndView("error/generic_error");
 		model.addObject("stackError", ExceptionUtils.getStackTrace(ex));
 		model.addObject("errMsg", ex.getMessage());
 
-		
-		
- 
 		return model;
- 
 	}
-	
+
 	/**
 	 * Generic exception catch allpage
+	 *
 	 * @param ex
 	 * @return
 	 */
-	@RequestMapping(value="/error", method=RequestMethod.GET)
+	@RequestMapping(value = "/error", method = RequestMethod.GET)
 	public ModelAndView handleCatchAllException(Model model) {
-
-		
 		ModelAndView modelAndView = null;
 
-			
 		modelAndView = new ModelAndView("error/generic_error");
- 
+
 		return modelAndView;
- 
 	}
-
-
 }
