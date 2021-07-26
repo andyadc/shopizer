@@ -53,11 +53,13 @@
 
         <mysql-driver.version>8.0.25</mysql-driver.version>
 
-        <drools.version>7.56.0.Final</drools.version>
+        <drools.version>7.57.0.Final</drools.version>
         <elasticsearch.version>7.13.3</elasticsearch.version>
 
         <springfox.version>3.0.0</springfox.version>
         <jjwt.version>0.9.1</jjwt.version>
+
+        <aws-java-sdk.version>1.12.31</aws-java-sdk.version>
     </properties>
 
     <!--BOM -->
@@ -201,14 +203,14 @@
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk-s3</artifactId>
-                <version>1.12.31</version>
+                <version>${aws-java-sdk.version}</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-ses -->
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk-ses</artifactId>
-                <version>1.12.31</version>
+                <version>${aws-java-sdk.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
