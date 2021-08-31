@@ -18,48 +18,37 @@ import java.util.Map;
 
 @Controller
 public class SecurityController {
-	
-	@Inject
-	GroupService groupService;
 
-	@RequestMapping(value="/admin/user/permissions.html", method=RequestMethod.GET)
-	public String displayPermissions(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-		setMenu(model,request);
-		return "admin-user-permissions";
-		
-		
-	}
-	
-	
-	@RequestMapping(value="/admin/user/groups.html", method=RequestMethod.GET)
-	public String displayGroups(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-		setMenu(model,request);
-		List<Group> groups = groupService.listGroup(GroupType.ADMIN);
-		
-		model.addAttribute("groups", groups);
-		
-		return "admin-user-groups";
-		
-		
-	}
-	
-	private void setMenu(Model model, HttpServletRequest request) throws Exception {
-		
-		//display menu
-		Map<String,String> activeMenus = new HashMap<String,String>();
-		activeMenus.put("profile", "profile");
-		activeMenus.put("security", "security");
-		
-		@SuppressWarnings("unchecked")
-		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
-		
-		Menu currentMenu = menus.get("profile");
-		model.addAttribute("currentMenu",currentMenu);
-		model.addAttribute("activeMenus",activeMenus);
-		//
-		
-	}
+    @Inject
+    GroupService groupService;
+
+    @RequestMapping(value = "/admin/user/permissions.html", method = RequestMethod.GET)
+    public String displayPermissions(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        setMenu(model, request);
+        return "admin-user-permissions";
+    }
+
+    @RequestMapping(value = "/admin/user/groups.html", method = RequestMethod.GET)
+    public String displayGroups(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        setMenu(model, request);
+        List<Group> groups = groupService.listGroup(GroupType.ADMIN);
+        model.addAttribute("groups", groups);
+
+        return "admin-user-groups";
+    }
+
+    private void setMenu(Model model, HttpServletRequest request) throws Exception {
+        //display menu
+        Map<String, String> activeMenus = new HashMap<String, String>();
+        activeMenus.put("profile", "profile");
+        activeMenus.put("security", "security");
+
+        @SuppressWarnings("unchecked")
+        Map<String, Menu> menus = (Map<String, Menu>) request.getAttribute("MENUMAP");
+
+        Menu currentMenu = menus.get("profile");
+        model.addAttribute("currentMenu", currentMenu);
+        model.addAttribute("activeMenus", activeMenus);
+    }
 
 }

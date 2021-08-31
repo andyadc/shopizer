@@ -26,107 +26,87 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
 /**
- * 
  * @author casams1
- *         http://stackoverflow.com/questions/5105776/spring-security-with
- *         -custom-user-details
+ * http://stackoverflow.com/questions/5105776/spring-security-with
+ * -custom-user-details
  */
 @Service("userDetailsService")
-public class UserServicesImpl implements WebUserServices{
-	
-	public final static String ROLE_PREFIX = "ROLE_";
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserServicesImpl.class);
-	private static final String DEFAULT_INITIAL_PASSWORD = "password";
-	@Inject
-	protected PermissionService  permissionService;
-	@Inject
-	protected GroupService   groupService;
-	@Inject
-	private UserService userService;
-	@Inject
-	private MerchantStoreService merchantStoreService;
-	@Inject
-	@Named("passwordEncoder")
-	private PasswordEncoder passwordEncoder;
-	
-	public UserDetails loadUserByUsername(String userName)
-			throws UsernameNotFoundException, DataAccessException {
+public class UserServicesImpl implements WebUserServices {
 
-		com.salesmanager.core.model.user.User user = null;
-		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		
-		try {
+    public final static String ROLE_PREFIX = "ROLE_";
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServicesImpl.class);
+    private static final String DEFAULT_INITIAL_PASSWORD = "password";
+    @Inject
+    protected PermissionService permissionService;
+    @Inject
+    protected GroupService groupService;
+    @Inject
+    private UserService userService;
+    @Inject
+    private MerchantStoreService merchantStoreService;
+    @Inject
+    @Named("passwordEncoder")
+    private PasswordEncoder passwordEncoder;
 
-			user = userService.getByUserName(userName);
+    public UserDetails loadUserByUsername(String userName)
+            throws UsernameNotFoundException, DataAccessException {
 
-			if(user==null) {
-				return null;
-			}
+        com.salesmanager.core.model.user.User user = null;
+        Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
-			GrantedAuthority role = new SimpleGrantedAuthority(ROLE_PREFIX + Constants.PERMISSION_AUTHENTICATED);//required to login
-			authorities.add(role);
-	
-			List<Integer> groupsId = new ArrayList<Integer>();
-			List<Group> groups = user.getGroups();
-			for(Group group : groups) {
-				
-				
-				groupsId.add(group.getId());
-				
-			}
-			
-	
-	    	
-	    	List<Permission> permissions = permissionService.getPermissions(groupsId);
-	    	for(Permission permission : permissions) {
-	    		GrantedAuthority auth = new SimpleGrantedAuthority(ROLE_PREFIX + permission.getPermissionName());
-	    		authorities.add(auth);
-	    	}
-    	
-		} catch (Exception e) {
-			LOGGER.error("Exception while querrying user",e);
-			throw new SecurityDataAccessException("Exception while querrying user",e);
-		}
-		
-		
-		
-	
-		
-		User secUser = new User(userName, user.getAdminPassword(), user.isActive(), true,
-				true, true, authorities);
-		return secUser;
-	}
-	
-	
-	public void createDefaultAdmin() throws Exception {
-		
-		  //TODO create all groups and permissions
-		
-		  MerchantStore store = merchantStoreService.getByCode(MerchantStore.DEFAULT_STORE);
+        try {
+            user = userService.getByUserName(userName);
+            if (user == null) {
+                return null;
+            }
 
-		  String password = passwordEncoder.encode(DEFAULT_INITIAL_PASSWORD);
-		  
-		  List<Group> groups = groupService.listGroup(GroupType.ADMIN);
-		  
-		  //creation of the super admin admin:password)
-		  com.salesmanager.core.model.user.User user = new com.salesmanager.core.model.user.User("admin@shopizer.com",password,"admin@shopizer.com");
-		  user.setFirstName("Administrator");
-		  user.setLastName("User");
-		  
-		  for(Group group : groups) {
-			  if(group.getGroupName().equals(Constants.GROUP_SUPERADMIN) || group.getGroupName().equals(Constants.GROUP_ADMIN)) {
-				  user.getGroups().add(group);
-			  }
-		  }
+            GrantedAuthority role = new SimpleGrantedAuthority(ROLE_PREFIX + Constants.PERMISSION_AUTHENTICATED);//required to login
+            authorities.add(role);
 
-		  user.setMerchantStore(store);		  
-		  userService.create(user);
-		
-		
-	}
+            List<Integer> groupsId = new ArrayList<Integer>();
+            List<Group> groups = user.getGroups();
+            for (Group group : groups) {
+                groupsId.add(group.getId());
+            }
 
+            List<Permission> permissions = permissionService.getPermissions(groupsId);
+            for (Permission permission : permissions) {
+                GrantedAuthority auth = new SimpleGrantedAuthority(ROLE_PREFIX + permission.getPermissionName());
+                authorities.add(auth);
+            }
 
+        } catch (Exception e) {
+            LOGGER.error("Exception while querrying user", e);
+            throw new SecurityDataAccessException("Exception while querrying user", e);
+        }
 
+        User secUser = new User(userName, user.getAdminPassword(), user.isActive(), true,
+                true, true, authorities);
+        return secUser;
+    }
+
+    public void createDefaultAdmin() throws Exception {
+
+        //TODO create all groups and permissions
+
+        MerchantStore store = merchantStoreService.getByCode(MerchantStore.DEFAULT_STORE);
+
+        String password = passwordEncoder.encode(DEFAULT_INITIAL_PASSWORD);
+
+        List<Group> groups = groupService.listGroup(GroupType.ADMIN);
+
+        //creation of the super admin admin:password)
+        com.salesmanager.core.model.user.User user = new com.salesmanager.core.model.user.User("admin@shopizer.com", password, "admin@shopizer.com");
+        user.setFirstName("Administrator");
+        user.setLastName("User");
+
+        for (Group group : groups) {
+            if (group.getGroupName().equals(Constants.GROUP_SUPERADMIN) || group.getGroupName().equals(Constants.GROUP_ADMIN)) {
+                user.getGroups().add(group);
+            }
+        }
+        user.setMerchantStore(store);
+        userService.create(user);
+    }
 }

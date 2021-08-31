@@ -26,88 +26,70 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-
-
 @Controller
 public class CacheController {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(CacheController.class);
-	
-	@Inject
-	private CacheUtils cache;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CacheController.class);
 
+    @Inject
+    private CacheUtils cache;
 
-	@PreAuthorize("hasRole('AUTH')")
-	@RequestMapping(value="/admin/cache/cacheManagement.html", method=RequestMethod.GET)
-	public String displayAccounts(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @PreAuthorize("hasRole('AUTH')")
+    @RequestMapping(value = "/admin/cache/cacheManagement.html", method = RequestMethod.GET)
+    public String displayAccounts(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		this.setMenu(model, request);
-		
-		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		
-		//get cache keys
-		List<String> cacheKeysList = cache.getCacheKeys(store);
+        this.setMenu(model, request);
 
-		model.addAttribute("keys", cacheKeysList);
+        MerchantStore store = (MerchantStore) request.getAttribute(Constants.ADMIN_STORE);
 
-		return ControllerConstants.Tiles.Configuration.cache;
-		
-	}
-	
-	
-	@PreAuthorize("hasRole('AUTH')")
-	@RequestMapping(value="/admin/cache/clear.html", method=RequestMethod.POST)
-	public @ResponseBody ResponseEntity<String> clearCache(HttpServletRequest request, HttpServletResponse response) {
-		String cacheKey = request.getParameter("cacheKey");
+        //get cache keys
+        List<String> cacheKeysList = cache.getCacheKeys(store);
 
-		AjaxResponse resp = new AjaxResponse();
+        model.addAttribute("keys", cacheKeysList);
 
-		try {
+        return ControllerConstants.Tiles.Configuration.cache;
+    }
 
-			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+    @PreAuthorize("hasRole('AUTH')")
+    @RequestMapping(value = "/admin/cache/clear.html", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity<String> clearCache(HttpServletRequest request, HttpServletResponse response) {
+        String cacheKey = request.getParameter("cacheKey");
 
-			StringBuilder key = new StringBuilder();
-			key.append(store.getId()).append("_").append(cacheKey);
-			
-			if(cacheKey!=null) {
-				cache.removeFromCache(key.toString());
-			} else {
-				cache.removeAllFromCache(store);
-			}
+        AjaxResponse resp = new AjaxResponse();
+        try {
+            MerchantStore store = (MerchantStore) request.getAttribute(Constants.ADMIN_STORE);
 
-			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+            StringBuilder key = new StringBuilder();
+            key.append(store.getId()).append("_").append(cacheKey);
 
-		} catch (Exception e) {
-			LOGGER.error("Error while updateing groups", e);
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-		}
-		
-		String returnString = resp.toJSONString();
-		final HttpHeaders httpHeaders= new HttpHeaders();
-	    httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
-		return new ResponseEntity<String>(returnString,httpHeaders,HttpStatus.OK);
-	}
-	
+            if (cacheKey != null) {
+                cache.removeFromCache(key.toString());
+            } else {
+                cache.removeAllFromCache(store);
+            }
+            resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+        } catch (Exception e) {
+            LOGGER.error("Error while updateing groups", e);
+            resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+        }
 
-	
-	private void setMenu(Model model, HttpServletRequest request) throws Exception {
-		
-		//display menu
-		Map<String,String> activeMenus = new HashMap<String,String>();
-		activeMenus.put("cache", "cache");
+        String returnString = resp.toJSONString();
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        return new ResponseEntity<String>(returnString, httpHeaders, HttpStatus.OK);
+    }
 
-		
-		@SuppressWarnings("unchecked")
-		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
-		
-		Menu currentMenu = menus.get("cache");
-		model.addAttribute("currentMenu",currentMenu);
-		model.addAttribute("activeMenus",activeMenus);
-		//
-		
-	}
-	
+    private void setMenu(Model model, HttpServletRequest request) throws Exception {
+        //display menu
+        Map<String, String> activeMenus = new HashMap<String, String>();
+        activeMenus.put("cache", "cache");
 
+        @SuppressWarnings("unchecked")
+        Map<String, Menu> menus = (Map<String, Menu>) request.getAttribute("MENUMAP");
+
+        Menu currentMenu = menus.get("cache");
+        model.addAttribute("currentMenu", currentMenu);
+        model.addAttribute("activeMenus", activeMenus);
+    }
 }

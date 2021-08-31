@@ -31,359 +31,351 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 /**
  * Main entry point for security - admin - customer - auth - private - services
- * 
- * @author dur9213
- *
  */
 @Configuration
 @EnableWebSecurity
 public class MultipleEntryPointsSecurityConfig {
 
-	private static final String API_VERSION = "/api/v*";
+    private static final String API_VERSION = "/api/v*";
 
-	@Bean
-	public AuthenticationTokenFilter authenticationTokenFilter() {
-		return new AuthenticationTokenFilter();
-	}
-	
-	@Bean
-	public CredentialsService credentialsService() {
-		return new CredentialsServiceImpl();
-	}
+    @Bean
+    public AuthenticationTokenFilter authenticationTokenFilter() {
+        return new AuthenticationTokenFilter();
+    }
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public CredentialsService credentialsService() {
+        return new CredentialsServiceImpl();
+    }
 
-	@Bean
-	public UserAuthenticationSuccessHandler userAuthenticationSuccessHandler() {
-		return new UserAuthenticationSuccessHandler();
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-	@Bean
-	public ServicesAuthenticationSuccessHandler servicesAuthenticationSuccessHandler() {
-		return new ServicesAuthenticationSuccessHandler();
-	}
+    @Bean
+    public UserAuthenticationSuccessHandler userAuthenticationSuccessHandler() {
+        return new UserAuthenticationSuccessHandler();
+    }
 
-	@Bean
-	public CustomerFacade customerFacade() {
-		return new com.salesmanager.shop.store.controller.customer.facade.CustomerFacadeImpl();
-	}
-	
-	/**
-	 * shop / customer
-	 * 
-	 * @author dur9213
-	 */
-	@Configuration
-	@Order(1)
-	public static class CustomerConfigurationAdapter extends WebSecurityConfigurerAdapter {
+    @Bean
+    public ServicesAuthenticationSuccessHandler servicesAuthenticationSuccessHandler() {
+        return new ServicesAuthenticationSuccessHandler();
+    }
 
-		@Bean("customerAuthenticationManager")
-		@Override
-		public AuthenticationManager authenticationManagerBean() throws Exception {
-			return super.authenticationManagerBean();
-		}
+    @Bean
+    public CustomerFacade customerFacade() {
+        return new com.salesmanager.shop.store.controller.customer.facade.CustomerFacadeImpl();
+    }
 
-		@Autowired
-		private UserDetailsService customerDetailsService;
+    /**
+     * shop / customer
+     *
+     * @author dur9213
+     */
+    @Configuration
+    @Order(1)
+    public static class CustomerConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
-		public CustomerConfigurationAdapter() {
-			super();
-		}
-		
-		@Override
-		public void configure(WebSecurity web) {
-			web.ignoring().antMatchers("/");
-			web.ignoring().antMatchers("/shop");
-			web.ignoring().antMatchers("/admin");
-			web.ignoring().antMatchers("/error");
-			web.ignoring().antMatchers("/resources/**");
-			web.ignoring().antMatchers("/static/**");
-			web.ignoring().antMatchers("/WEB-INF/**");
-			web.ignoring().antMatchers("/services/public/**");
-		}
+        @Autowired
+        private UserDetailsService customerDetailsService;
 
-		@Override
-		public void configure(AuthenticationManagerBuilder auth) throws Exception {
-			auth.userDetailsService(customerDetailsService);
-		}
+        public CustomerConfigurationAdapter() {
+            super();
+        }
 
-		@Override
-		protected void configure(HttpSecurity http) throws Exception {
-			http
-			.antMatcher("/shop/**")
-			.csrf().disable()			
-			.authorizeRequests()
-					.antMatchers("/shop/").permitAll()
-					.antMatchers("/shop/**").permitAll()
-					.antMatchers("/shop/customer/logon*").permitAll()
-					.antMatchers("/shop/customer/registration*").permitAll()
-					.antMatchers("/shop/customer/logout*").permitAll()
-					.antMatchers("/shop/customer/customLogon*").permitAll()
-					.antMatchers("/shop/customer/denied*").permitAll()
-					.antMatchers("/shop/customer/**").hasRole("AUTH_CUSTOMER")
-					.anyRequest().authenticated()
-					.and()
-					.httpBasic()
-					.authenticationEntryPoint(shopAuthenticationEntryPoint())
-					.and()
-					.logout()
-					.logoutUrl("/shop/customer/logout")
-					.logoutSuccessUrl("/shop/")
-					.invalidateHttpSession(true)
-					.deleteCookies("JSESSIONID")
+        @Bean("customerAuthenticationManager")
+        @Override
+        public AuthenticationManager authenticationManagerBean() throws Exception {
+            return super.authenticationManagerBean();
+        }
 
-					.invalidateHttpSession(false)
-					.and()
-					.exceptionHandling().accessDeniedPage("/shop/");
-		}
+        @Override
+        public void configure(WebSecurity web) {
+            web.ignoring().antMatchers("/");
+            web.ignoring().antMatchers("/shop");
+            web.ignoring().antMatchers("/admin");
+            web.ignoring().antMatchers("/error");
+            web.ignoring().antMatchers("/resources/**");
+            web.ignoring().antMatchers("/static/**");
+            web.ignoring().antMatchers("/WEB-INF/**");
+            web.ignoring().antMatchers("/services/public/**");
+        }
 
-		@Bean
-		public AuthenticationEntryPoint shopAuthenticationEntryPoint() {
-			BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
-			entryPoint.setRealmName("shop-realm");
-			return entryPoint;
-		}
-	}
-	
-	/**
-	 * services api v0
-	 * 
-	 * @author dur9213
-	 * @deprecated
-	 *
-	 */
-	@Configuration
-	@Order(2)
-	public static class ServicesApiConfigurationAdapter extends WebSecurityConfigurerAdapter {
+        @Override
+        public void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth.userDetailsService(customerDetailsService);
+        }
 
-		@Autowired
-		private WebUserServices userDetailsService;
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                    .antMatcher("/shop/**")
+                    .csrf().disable()
+                    .authorizeRequests()
+                    .antMatchers("/shop/").permitAll()
+                    .antMatchers("/shop/**").permitAll()
+                    .antMatchers("/shop/customer/logon*").permitAll()
+                    .antMatchers("/shop/customer/registration*").permitAll()
+                    .antMatchers("/shop/customer/logout*").permitAll()
+                    .antMatchers("/shop/customer/customLogon*").permitAll()
+                    .antMatchers("/shop/customer/denied*").permitAll()
+                    .antMatchers("/shop/customer/**").hasRole("AUTH_CUSTOMER")
+                    .anyRequest().authenticated()
+                    .and()
+                    .httpBasic()
+                    .authenticationEntryPoint(shopAuthenticationEntryPoint())
+                    .and()
+                    .logout()
+                    .logoutUrl("/shop/customer/logout")
+                    .logoutSuccessUrl("/shop/")
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
 
-		@Autowired
-		private ServicesAuthenticationSuccessHandler servicesAuthenticationSuccessHandler;
+                    .invalidateHttpSession(false)
+                    .and()
+                    .exceptionHandling().accessDeniedPage("/shop/");
+        }
 
-		public ServicesApiConfigurationAdapter() {
-			super();
-		}
+        @Bean
+        public AuthenticationEntryPoint shopAuthenticationEntryPoint() {
+            BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
+            entryPoint.setRealmName("shop-realm");
+            return entryPoint;
+        }
+    }
 
-		@Override
-		public void configure(AuthenticationManagerBuilder auth) throws Exception {
-			auth.userDetailsService(userDetailsService);
-		}
+    /**
+     * services api v0
+     *
+     * @author dur9213
+     * @deprecated
+     */
+    @Configuration
+    @Order(2)
+    public static class ServicesApiConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
-		@Override
-		protected void configure(HttpSecurity http) throws Exception {
-			http
-			.antMatcher("/services/**")
-			.csrf().disable()
-					.authorizeRequests()
-					.antMatchers("/services/public/**").permitAll()
-					.antMatchers("/services/private/**").hasRole("AUTH")
-					.anyRequest().authenticated()
-					.and().httpBasic().authenticationEntryPoint(servicesAuthenticationEntryPoint())
-					.and().formLogin()
-					.successHandler(servicesAuthenticationSuccessHandler);
-		}
+        @Autowired
+        private WebUserServices userDetailsService;
 
-		@Bean
-		public AuthenticationEntryPoint servicesAuthenticationEntryPoint() {
-			BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
-			entryPoint.setRealmName("rest-customer-realm");
-			return entryPoint;
-		}
-	}
+        @Autowired
+        private ServicesAuthenticationSuccessHandler servicesAuthenticationSuccessHandler;
 
-	@Configuration
-	@Order(3)
-	public static class AdminConfigurationAdapter extends WebSecurityConfigurerAdapter {
+        public ServicesApiConfigurationAdapter() {
+            super();
+        }
 
-		@Autowired
-		private WebUserServices userDetailsService;
+        @Override
+        public void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth.userDetailsService(userDetailsService);
+        }
 
-		@Autowired
-		private UserAuthenticationSuccessHandler userAuthenticationSuccessHandler;
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                    .antMatcher("/services/**")
+                    .csrf().disable()
+                    .authorizeRequests()
+                    .antMatchers("/services/public/**").permitAll()
+                    .antMatchers("/services/private/**").hasRole("AUTH")
+                    .anyRequest().authenticated()
+                    .and().httpBasic().authenticationEntryPoint(servicesAuthenticationEntryPoint())
+                    .and().formLogin()
+                    .successHandler(servicesAuthenticationSuccessHandler);
+        }
 
-		public AdminConfigurationAdapter() {
-			super();
-		}
+        @Bean
+        public AuthenticationEntryPoint servicesAuthenticationEntryPoint() {
+            BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
+            entryPoint.setRealmName("rest-customer-realm");
+            return entryPoint;
+        }
+    }
 
-		@Override
-		public void configure(AuthenticationManagerBuilder auth) throws Exception {
-			auth.userDetailsService(userDetailsService);
-		}
-		
-		@Override
-		public void configure(WebSecurity web) {
-		}
+    @Configuration
+    @Order(3)
+    public static class AdminConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
-		@Override
-		protected void configure(HttpSecurity http) throws Exception {
-			http
-			.antMatcher("/admin/**")
-					.authorizeRequests()
-					.antMatchers("/admin/logon*").permitAll()
-					.antMatchers("/admin/resources/**").permitAll()
-					.antMatchers("/admin/layout/**").permitAll()
-					.antMatchers("/admin/denied*").permitAll()
-					.antMatchers("/admin/unauthorized*").permitAll()
-					.antMatchers("/admin/users/resetPassword*").permitAll()
-					.antMatchers("/admin/").hasRole("AUTH")
-					.antMatchers("/admin/**").hasRole("AUTH")
-					.antMatchers("/admin/**").hasRole("AUTH")
-					.antMatchers("/admin/users/resetPasswordSecurityQtn*").permitAll()
-					.anyRequest()
-					.authenticated()
-					.and()
-					.httpBasic()
-					.authenticationEntryPoint(adminAuthenticationEntryPoint())
-					.and()
-					.formLogin().usernameParameter("username").passwordParameter("password")
-					.loginPage("/admin/logon.html")
-					.loginProcessingUrl("/admin/performUserLogin")
-					.successHandler(userAuthenticationSuccessHandler)
-					.failureUrl("/admin/logon.html?login_error=true")
-					.and()
-					.csrf().disable()
-					.logout().logoutUrl("/admin/logout").logoutSuccessUrl("/admin/home.html")
-					.invalidateHttpSession(true).and().exceptionHandling().accessDeniedPage("/admin/denied.html");
-		}
+        @Autowired
+        private WebUserServices userDetailsService;
 
-		@Bean
-		public AuthenticationEntryPoint adminAuthenticationEntryPoint() {
-			BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
-			entryPoint.setRealmName("admin-realm");
-			return entryPoint;
-		}
-	}
+        @Autowired
+        private UserAuthenticationSuccessHandler userAuthenticationSuccessHandler;
 
-	@Configuration
-	@Order(5)
-	public static class UserApiConfigurationAdapter extends WebSecurityConfigurerAdapter {
+        public AdminConfigurationAdapter() {
+            super();
+        }
 
-		@Autowired
-		private AuthenticationTokenFilter authenticationTokenFilter;
+        @Override
+        public void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth.userDetailsService(userDetailsService);
+        }
 
-		@Autowired
-		JWTAdminServicesImpl jwtUserDetailsService;
+        @Override
+        public void configure(WebSecurity web) {
+        }
 
-		@Bean("jwtAdminAuthenticationManager")
-		@Override
-		public AuthenticationManager authenticationManagerBean() throws Exception {
-			AuthenticationManager mgr = super.authenticationManagerBean();
-			return mgr;
-		}
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                    .antMatcher("/admin/**")
+                    .authorizeRequests()
+                    .antMatchers("/admin/logon*").permitAll()
+                    .antMatchers("/admin/resources/**").permitAll()
+                    .antMatchers("/admin/layout/**").permitAll()
+                    .antMatchers("/admin/denied*").permitAll()
+                    .antMatchers("/admin/unauthorized*").permitAll()
+                    .antMatchers("/admin/users/resetPassword*").permitAll()
+                    .antMatchers("/admin/").hasRole("AUTH")
+                    .antMatchers("/admin/**").hasRole("AUTH")
+                    .antMatchers("/admin/**").hasRole("AUTH")
+                    .antMatchers("/admin/users/resetPasswordSecurityQtn*").permitAll()
+                    .anyRequest()
+                    .authenticated()
+                    .and()
+                    .httpBasic()
+                    .authenticationEntryPoint(adminAuthenticationEntryPoint())
+                    .and()
+                    .formLogin().usernameParameter("username").passwordParameter("password")
+                    .loginPage("/admin/logon.html")
+                    .loginProcessingUrl("/admin/performUserLogin")
+                    .successHandler(userAuthenticationSuccessHandler)
+                    .failureUrl("/admin/logon.html?login_error=true")
+                    .and()
+                    .csrf().disable()
+                    .logout().logoutUrl("/admin/logout").logoutSuccessUrl("/admin/home.html")
+                    .invalidateHttpSession(true).and().exceptionHandling().accessDeniedPage("/admin/denied.html");
+        }
 
-		public UserApiConfigurationAdapter() {
-			super();
-		}
+        @Bean
+        public AuthenticationEntryPoint adminAuthenticationEntryPoint() {
+            BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
+            entryPoint.setRealmName("admin-realm");
+            return entryPoint;
+        }
+    }
 
-		@Override
-		public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		       auth.userDetailsService(jwtUserDetailsService)
-	            .and()
-	            .authenticationProvider(authenticationProvider());
-		}
-		
-		@Override
-		public void configure(WebSecurity web) {
-			web.ignoring().antMatchers("/swagger-ui.html");
-		}
+    @Configuration
+    @Order(5)
+    public static class UserApiConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
-		/**
-		 * Admin user api
-		 */
-		@Override
-		protected void configure(HttpSecurity http) throws Exception {
-			http
-					.antMatcher(API_VERSION + "/private/**")
-					.authorizeRequests()
-					.antMatchers(API_VERSION + "/private/login*").permitAll()
-					.antMatchers(API_VERSION + "/private/refresh").permitAll()
-					.antMatchers(HttpMethod.OPTIONS, API_VERSION + "/private/**").permitAll()
-					.antMatchers(API_VERSION + "/private/**").hasRole("AUTH")
-					.anyRequest().authenticated()
-					.and()
-					.httpBasic().authenticationEntryPoint(apiAdminAuthenticationEntryPoint())
-					.and()
-					.addFilterAfter(authenticationTokenFilter, BasicAuthenticationFilter.class)
-					.csrf().disable();
+        @Autowired
+        JWTAdminServicesImpl jwtUserDetailsService;
+        @Autowired
+        private AuthenticationTokenFilter authenticationTokenFilter;
 
-		}
-		
-	    @Bean
-	    public AuthenticationProvider authenticationProvider() {
-	    	JWTAdminAuthenticationProvider provider = new JWTAdminAuthenticationProvider();
-	        provider.setUserDetailsService(jwtUserDetailsService);
-	        return provider;
-	    }
+        public UserApiConfigurationAdapter() {
+            super();
+        }
 
-		@Bean
-		public AuthenticationEntryPoint apiAdminAuthenticationEntryPoint() {
-			BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
-			entryPoint.setRealmName("api-admin-realm");
-			return entryPoint;
-		}
-	}
+        @Bean("jwtAdminAuthenticationManager")
+        @Override
+        public AuthenticationManager authenticationManagerBean() throws Exception {
+            AuthenticationManager mgr = super.authenticationManagerBean();
+            return mgr;
+        }
 
-	@Configuration
-	@Order(6)
-	public static class CustomeApiConfigurationAdapter extends WebSecurityConfigurerAdapter {
+        @Override
+        public void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth.userDetailsService(jwtUserDetailsService)
+                    .and()
+                    .authenticationProvider(authenticationProvider());
+        }
 
-		@Autowired
-		private AuthenticationTokenFilter authenticationTokenFilter;
+        @Override
+        public void configure(WebSecurity web) {
+            web.ignoring().antMatchers("/swagger-ui.html");
+        }
 
-		@Autowired
-		private UserDetailsService jwtCustomerDetailsService;
+        /**
+         * Admin user api
+         */
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                    .antMatcher(API_VERSION + "/private/**")
+                    .authorizeRequests()
+                    .antMatchers(API_VERSION + "/private/login*").permitAll()
+                    .antMatchers(API_VERSION + "/private/refresh").permitAll()
+                    .antMatchers(HttpMethod.OPTIONS, API_VERSION + "/private/**").permitAll()
+                    .antMatchers(API_VERSION + "/private/**").hasRole("AUTH")
+                    .anyRequest().authenticated()
+                    .and()
+                    .httpBasic().authenticationEntryPoint(apiAdminAuthenticationEntryPoint())
+                    .and()
+                    .addFilterAfter(authenticationTokenFilter, BasicAuthenticationFilter.class)
+                    .csrf().disable();
+        }
 
-		public CustomeApiConfigurationAdapter() {
-			super();
-		}
-		
-		@Bean("jwtCustomerAuthenticationManager")
-		@Override
-		public AuthenticationManager authenticationManagerBean() throws Exception {
-			return super.authenticationManagerBean();
-		}
+        @Bean
+        public AuthenticationProvider authenticationProvider() {
+            JWTAdminAuthenticationProvider provider = new JWTAdminAuthenticationProvider();
+            provider.setUserDetailsService(jwtUserDetailsService);
+            return provider;
+        }
 
-		@Override
-		public void configure(AuthenticationManagerBuilder auth) throws Exception {
-			auth.userDetailsService(jwtCustomerDetailsService);
-		}
+        @Bean
+        public AuthenticationEntryPoint apiAdminAuthenticationEntryPoint() {
+            BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
+            entryPoint.setRealmName("api-admin-realm");
+            return entryPoint;
+        }
+    }
 
-		@Override
-		protected void configure(HttpSecurity http) throws Exception {
-			http
-				.antMatcher(API_VERSION + "/auth/**")
-				.authorizeRequests()
-					.antMatchers(API_VERSION + "/auth/refresh").permitAll()
-					.antMatchers(API_VERSION + "/auth/login").permitAll()
-					.antMatchers(API_VERSION + "/auth/register").permitAll()
-					.antMatchers(HttpMethod.OPTIONS, API_VERSION + "/auth/**").permitAll()
-					.antMatchers(API_VERSION + "/auth/**")
-					.hasRole("AUTH_CUSTOMER").anyRequest().authenticated()
-					.and()
-					.httpBasic()
-					.authenticationEntryPoint(apiCustomerAuthenticationEntryPoint()).and().csrf().disable()
-					.addFilterAfter(authenticationTokenFilter, BasicAuthenticationFilter.class);
+    @Configuration
+    @Order(6)
+    public static class CustomeApiConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
-		}
-		
-	    @Bean
-	    public AuthenticationProvider authenticationProvider() {
-	    	JWTCustomerAuthenticationProvider provider = new JWTCustomerAuthenticationProvider();
-	        provider.setUserDetailsService(jwtCustomerDetailsService);
-	        return provider;
-	    }
+        @Autowired
+        private AuthenticationTokenFilter authenticationTokenFilter;
 
-		@Bean
-		public AuthenticationEntryPoint apiCustomerAuthenticationEntryPoint() {
-			BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
-			entryPoint.setRealmName("api-customer-realm");
-			return entryPoint;
-		}
+        @Autowired
+        private UserDetailsService jwtCustomerDetailsService;
 
-	}
+        public CustomeApiConfigurationAdapter() {
+            super();
+        }
+
+        @Bean("jwtCustomerAuthenticationManager")
+        @Override
+        public AuthenticationManager authenticationManagerBean() throws Exception {
+            return super.authenticationManagerBean();
+        }
+
+        @Override
+        public void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth.userDetailsService(jwtCustomerDetailsService);
+        }
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                    .antMatcher(API_VERSION + "/auth/**")
+                    .authorizeRequests()
+                    .antMatchers(API_VERSION + "/auth/refresh").permitAll()
+                    .antMatchers(API_VERSION + "/auth/login").permitAll()
+                    .antMatchers(API_VERSION + "/auth/register").permitAll()
+                    .antMatchers(HttpMethod.OPTIONS, API_VERSION + "/auth/**").permitAll()
+                    .antMatchers(API_VERSION + "/auth/**")
+                    .hasRole("AUTH_CUSTOMER").anyRequest().authenticated()
+                    .and()
+                    .httpBasic()
+                    .authenticationEntryPoint(apiCustomerAuthenticationEntryPoint()).and().csrf().disable()
+                    .addFilterAfter(authenticationTokenFilter, BasicAuthenticationFilter.class);
+        }
+
+        @Bean
+        public AuthenticationProvider authenticationProvider() {
+            JWTCustomerAuthenticationProvider provider = new JWTCustomerAuthenticationProvider();
+            provider.setUserDetailsService(jwtCustomerDetailsService);
+            return provider;
+        }
+
+        @Bean
+        public AuthenticationEntryPoint apiCustomerAuthenticationEntryPoint() {
+            BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
+            entryPoint.setRealmName("api-customer-realm");
+            return entryPoint;
+        }
+    }
 }

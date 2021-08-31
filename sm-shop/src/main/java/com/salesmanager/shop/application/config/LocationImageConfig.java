@@ -10,32 +10,26 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class LocationImageConfig {
-	
-  @Value("${config.cms.contentUrl}")
-  private String contentUrl;
-  
-  @Value("${config.cms.method}")
-  private String method;
-  
-  @Value("${config.cms.static.path}")
-  private String staticPath;
 
-  @Bean
-  public ImageFilePath img() {
-	  
-	if(!StringUtils.isEmpty(method) && !method.equals("default")) {
-	    CloudFilePathUtils cloudFilePathUtils = new CloudFilePathUtils();
-	    cloudFilePathUtils.setBasePath(contentUrl);
-	    return cloudFilePathUtils;
+    @Value("${config.cms.contentUrl}")
+    private String contentUrl;
 
-	} else {
-	    LocalImageFilePathUtils localImageFilePathUtils = new LocalImageFilePathUtils();
-	    localImageFilePathUtils.setBasePath(staticPath);
-	    return localImageFilePathUtils;
-	}
-	  
+    @Value("${config.cms.method}")
+    private String method;
 
-  }
-  
-  
+    @Value("${config.cms.static.path}")
+    private String staticPath;
+
+    @Bean
+    public ImageFilePath img() {
+        if (!StringUtils.isEmpty(method) && !method.equals("default")) {
+            CloudFilePathUtils cloudFilePathUtils = new CloudFilePathUtils();
+            cloudFilePathUtils.setBasePath(contentUrl);
+            return cloudFilePathUtils;
+        } else {
+            LocalImageFilePathUtils localImageFilePathUtils = new LocalImageFilePathUtils();
+            localImageFilePathUtils.setBasePath(staticPath);
+            return localImageFilePathUtils;
+        }
+    }
 }

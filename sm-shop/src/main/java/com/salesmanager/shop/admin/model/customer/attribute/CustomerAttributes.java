@@ -2,7 +2,6 @@ package com.salesmanager.shop.admin.model.customer.attribute;
 
 import java.util.List;
 
-
 public class CustomerAttributes {
 	
 	private List<CustomerOption> customerOptions;
@@ -14,5 +13,4 @@ public class CustomerAttributes {
 	public void setCustomerOptions(List<CustomerOption> customerOptions) {
 		this.customerOptions = customerOptions;
 	}
-
 }

@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Autowired
     private MerchantStoreArgumentResolver merchantStoreArgumentResolver;
-    
+
     @Autowired
     private LanguageArgumentResolver languageArgumentResolver;
 

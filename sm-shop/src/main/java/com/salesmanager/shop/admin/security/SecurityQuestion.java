@@ -3,11 +3,8 @@ package com.salesmanager.shop.admin.security;
 import java.io.Serializable;
 
 public class SecurityQuestion implements Serializable {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 1L;
 	private String id;
 	private String label;
 
@@ -26,5 +23,4 @@ public class SecurityQuestion implements Serializable {
 	public void setId(String id) {
 		this.id = id;
 	}
-
 }

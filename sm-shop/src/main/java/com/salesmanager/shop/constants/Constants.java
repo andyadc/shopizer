@@ -26,8 +26,6 @@ public class Constants {
 	public final static String REF_SPLITTER = ":";
 	
 	public final static String FILE_NOT_FOUND = "File not found";
-	
-
 
 	public final static String DEFAULT_DOMAIN_NAME = "localhost:8080";
 
@@ -43,7 +41,6 @@ public class Constants {
 	public final static String SHIPPING_OPTIONS = "SHIPPING_OPTIONS";
 	public final static String ORDER_SUMMARY = "ORDER_SIMMARY";
 
-
 	public final static String GROUP_ADMIN = "ADMIN";
 	public final static String PERMISSION_AUTHENTICATED = "AUTH";
 	public final static String PERMISSION_CUSTOMER_AUTHENTICATED = "AUTH_CUSTOMER";
@@ -54,7 +51,6 @@ public class Constants {
 	public final static String GROUP_CUSTOMER = "CUSTOMER";
 	public final static String GROUP_SHIPPING = "SHIPPING";
 	public final static String ANONYMOUS_CUSTOMER = "ANONYMOUS_CUSTOMER";
-
 
 	public final static String CONTENT_IMAGE = "CONTENT";
 	public final static String CONTENT_LANDING_PAGE = "LANDING_PAGE";
@@ -72,9 +68,6 @@ public class Constants {
 
 	public final static String URL_EXTENSION= ".html";
 	public final static String REDIRECT_PREFIX ="redirect:";
-
-
-
 
 	public final static String STORE_CONFIGURATION = "STORECONFIGURATION";
 
@@ -129,5 +122,4 @@ public class Constants {
     public final static String RESPONSE_KEY_USERNAME = "userName";
     
     public final static String DEBUG_MODE = "debugMode";
-
 }

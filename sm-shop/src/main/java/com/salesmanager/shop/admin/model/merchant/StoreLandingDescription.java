@@ -6,59 +6,53 @@ import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 public class StoreLandingDescription implements Serializable {
-	
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	@NotEmpty
-	private String title;
-	private String description;
-	private String keywords;
-	private String homePageContent;
-	
-	
-	private Language language;
 
-	public String getDescription() {
-		return description;
-	}
+    private static final long serialVersionUID = 1L;
+    @NotEmpty
+    private String title;
+    private String description;
+    private String keywords;
+    private String homePageContent;
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    private Language language;
 
-	public String getHomePageContent() {
-		return homePageContent;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setHomePageContent(String homePageContent) {
-		this.homePageContent = homePageContent;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public String getKeywords() {
-		return keywords;
-	}
+    public String getHomePageContent() {
+        return homePageContent;
+    }
 
-	public void setKeywords(String keywords) {
-		this.keywords = keywords;
-	}
+    public void setHomePageContent(String homePageContent) {
+        this.homePageContent = homePageContent;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public String getKeywords() {
+        return keywords;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
+    }
 
-	public Language getLanguage() {
-		return language;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setLanguage(Language language) {
-		this.language = language;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
+    public Language getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
 }

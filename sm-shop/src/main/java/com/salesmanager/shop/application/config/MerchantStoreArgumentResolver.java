@@ -23,38 +23,37 @@ import static com.salesmanager.core.business.constants.Constants.DEFAULT_STORE;
 @Component
 public class MerchantStoreArgumentResolver implements HandlerMethodArgumentResolver {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MerchantStoreArgumentResolver.class);
-	public static final String REQUEST_PARAMATER_STORE = "store";
+    public static final String REQUEST_PARAMATER_STORE = "store";
+    private static final Logger LOGGER = LoggerFactory.getLogger(MerchantStoreArgumentResolver.class);
+    @Autowired
+    private StoreFacade storeFacade;
 
-	@Autowired
-	private StoreFacade storeFacade;
+    @Autowired
+    private UserFacade userFacade;
 
-	@Autowired
-	private UserFacade userFacade;
+    @Override
+    public boolean supportsParameter(MethodParameter parameter) {
+        return parameter.getParameterType().equals(MerchantStore.class);
+    }
 
-	@Override
-	public boolean supportsParameter(MethodParameter parameter) {
-		return parameter.getParameterType().equals(MerchantStore.class);
-	}
+    @Override
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+        String storeValue = Optional.ofNullable(webRequest.getParameter(REQUEST_PARAMATER_STORE))
+                .filter(StringUtils::isNotBlank).orElse(DEFAULT_STORE);
+        // todo get from cache
+        MerchantStore storeModel = storeFacade.get(storeValue);
 
-	@Override
-	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-		String storeValue = Optional.ofNullable(webRequest.getParameter(REQUEST_PARAMATER_STORE))
-				.filter(StringUtils::isNotBlank).orElse(DEFAULT_STORE);
-		// todo get from cache
-		MerchantStore storeModel = storeFacade.get(storeValue);
+        HttpServletRequest httpServletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
 
-		HttpServletRequest httpServletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
-
-		// TODO filter ??
-		// authorize request
-		boolean authorized = userFacade.authorizeStore(storeModel, httpServletRequest.getRequestURI());
-		LOGGER.debug("is request authorized {} for {} and store {}", authorized, httpServletRequest.getRequestURI(),
-				storeModel.getCode());
-		if(!authorized){
-			throw new UnauthorizedException("Cannot authorize user for store " + storeModel.getCode());
-		}
-		return storeModel;
-	}
+        // TODO filter ??
+        // authorize request
+        boolean authorized = userFacade.authorizeStore(storeModel, httpServletRequest.getRequestURI());
+        LOGGER.debug("is request authorized {} for {} and store {}", authorized, httpServletRequest.getRequestURI(),
+                storeModel.getCode());
+        if (!authorized) {
+            throw new UnauthorizedException("Cannot authorize user for store " + storeModel.getCode());
+        }
+        return storeModel;
+    }
 }

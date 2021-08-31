@@ -1,4 +1,3 @@
-
 package com.salesmanager.shop.admin.model.permission;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
@@ -15,10 +14,9 @@ import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "permission"
+        "permission"
 })
-public class Permissions implements Serializable
-{
+public class Permissions implements Serializable {
 
     private final static long serialVersionUID = 1L;
     @JsonIgnore

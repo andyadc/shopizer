@@ -7,5 +7,4 @@ public class ApplicationConstants {
 	public final static String RECAPTCHA_URL = "shopizer.recapatcha_url";
 	public final static String SHOP_SCHEME= "SHOP_SCHEME";
 	public final static int MAX_DOWNLOAD_DAYS = 30;
-
 }

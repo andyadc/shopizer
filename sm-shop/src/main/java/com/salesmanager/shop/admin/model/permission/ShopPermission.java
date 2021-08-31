@@ -1,4 +1,3 @@
-
 package com.salesmanager.shop.admin.model.permission;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
@@ -14,15 +13,15 @@ import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "type",
-    "group"
+        "type",
+        "group"
 })
-public class ShopPermission implements Serializable
-{
+public class ShopPermission implements Serializable {
 
     private final static long serialVersionUID = -7938476709520334066L;
+
     @JsonIgnore
-    private final Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private final Map<String, Object> additionalProperties = new HashMap<>();
     @JsonProperty("type")
     private String type;
     @JsonProperty("group")

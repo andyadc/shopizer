@@ -42,269 +42,241 @@ import java.util.Map;
 @Controller
 public class GroupsController {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(GroupsController.class);
-	@Inject
-	protected GroupService groupService;
-	@Inject
-	LanguageService languageService;
-	@Inject
-	PermissionService permissionService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(GroupsController.class);
 
-	@Inject
-	CountryService countryService;
+    @Inject
+    protected GroupService groupService;
+    @Inject
+    LanguageService languageService;
+    @Inject
+    PermissionService permissionService;
 
-	@Inject
-	LabelUtils messages;
+    @Inject
+    CountryService countryService;
 
+    @Inject
+    LabelUtils messages;
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value = "/admin/groups/editGroup.html", method = RequestMethod.GET)
+    public String displayGroup(@RequestParam("id") Integer groupId, Model model,
+                               Locale locale, HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        // display menu
+        setMenu(model, request);
 
-	@PreAuthorize("hasRole('ADMIN')")
-	@RequestMapping(value = "/admin/groups/editGroup.html", method = RequestMethod.GET)
-	public String displayGroup(@RequestParam("id") Integer groupId, Model model,
-			Locale locale, HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		// display menu
-		setMenu(model, request);
-		
-		GroupType[] groupTypes = GroupType.values();
-		List<String> groups = new ArrayList<String>();
+        GroupType[] groupTypes = GroupType.values();
+        List<String> groups = new ArrayList<String>();
 
-		for(GroupType t : groupTypes) {
-			if(GroupType.ADMIN.name() != t.name()) {
-				groups.add(t.name());
-			}
-		}
+        for (GroupType t : groupTypes) {
+            if (GroupType.ADMIN.name() != t.name()) {
+                groups.add(t.name());
+            }
+        }
 
-		Group group = groupService.getById(groupId);
-		
-		if(group == null) {
-			return "redirect://admin/groups/groups.html";
-			 
-		} 
+        Group group = groupService.getById(groupId);
 
-		GroupDetails groupDetails = new GroupDetails();
-		groupDetails.setGroup(group);
-		groupDetails.setTypes(groups);
-		
+        if (group == null) {
+            return "redirect://admin/groups/groups.html";
 
-		model.addAttribute("group", groupDetails);
+        }
 
-		return "admin-user-group";
-	}
-	
-	@PreAuthorize("hasRole('ADMIN')")
-	@RequestMapping(value = "/admin/groups/delete.html", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<String> delete(Model model,
-			Locale locale, HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		// display menu
-		
-		String sGroupId = request.getParameter("groupId");
+        GroupDetails groupDetails = new GroupDetails();
+        groupDetails.setGroup(group);
+        groupDetails.setTypes(groups);
 
-		AjaxResponse resp = new AjaxResponse();
-		final HttpHeaders httpHeaders= new HttpHeaders();
-	    httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
-		
+        model.addAttribute("group", groupDetails);
 
-		try {
-			
-			Integer groupId = Integer.parseInt(sGroupId);
-			Group group = groupService.getById(groupId);
+        return "admin-user-group";
+    }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value = "/admin/groups/delete.html", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity<String> delete(Model model,
+                                  Locale locale, HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        // display menu
 
-			if(group==null){
-				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
-				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
-				String returnString = resp.toJSONString();
-				return new ResponseEntity<String>(returnString,httpHeaders,HttpStatus.OK);
-			}
-			
-			if(!request.isUserInRole(Constants.GROUP_ADMIN)) {
-				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
-				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
-				String returnString = resp.toJSONString();
-				return new ResponseEntity<String>(returnString,httpHeaders,HttpStatus.OK);
-			}
-			
-			if(GroupType.ADMIN.name().equals(group.getGroupType().name())) {
-				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
-				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
-				String returnString = resp.toJSONString();
-				return new ResponseEntity<String>(returnString,httpHeaders,HttpStatus.OK);
-			}
+        String sGroupId = request.getParameter("groupId");
 
-			groupService.delete(group);
-			
-			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+        AjaxResponse resp = new AjaxResponse();
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
 
-		
-		
-		} catch (Exception e) {
-			LOGGER.error("Error while deleting group", e);
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-			resp.setErrorMessage(e);
-		}
-		
-		String returnString = resp.toJSONString();
-		return new ResponseEntity<String>(returnString,httpHeaders,HttpStatus.OK);
-		
-		
-	}
-	
-	@PreAuthorize("hasRole('ADMIN')")
-	@RequestMapping(value = "/admin/group/save.html", method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("group") GroupDetails group, BindingResult result, Locale locale, Model model,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		// display menu
-		setMenu(model, request);
-		
-		GroupType[] groupTypes = GroupType.values();
-		List<String> groups = new ArrayList<String>();
+        try {
+            Integer groupId = Integer.parseInt(sGroupId);
+            Group group = groupService.getById(groupId);
 
-		for(GroupType t : groupTypes) {
-			if(GroupType.ADMIN.name() != t.name()) {
-				groups.add(t.name());
-			}
-		}
+            if (group == null) {
+                resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
+                resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+                String returnString = resp.toJSONString();
+                return new ResponseEntity<String>(returnString, httpHeaders, HttpStatus.OK);
+            }
 
-		//check if already exists
-		Group g = null;
-		if(group.getGroup().getId()!=null) {
-			Group gid = groupService.getById(group.getGroup().getId());
-			if(gid != null && !gid.getGroupName().equals(group.getGroup().getGroupName())) {
-				g = groupService.findByName(group.getGroup().getGroupName());
-			}
-		} else {
-			 g = groupService.findByName(group.getGroup().getGroupName());
-		}
-		
-		if(g != null) {
-			 ObjectError error = new ObjectError("group.groupName", messages.getMessage("message.name.exist", locale));
-			 result.addError(error);
-			 model.addAttribute("error","error");
-		} else {
-			groupService.save(group.getGroup());
-			model.addAttribute("success","success");
-		}
-		
-		GroupDetails groupDetails = new GroupDetails();
-		groupDetails.setGroup(group.getGroup());
-		groupDetails.setTypes(groups);
-		
+            if (!request.isUserInRole(Constants.GROUP_ADMIN)) {
+                resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
+                resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+                String returnString = resp.toJSONString();
+                return new ResponseEntity<String>(returnString, httpHeaders, HttpStatus.OK);
+            }
 
-		model.addAttribute("group", groupDetails);
-		
-		return "admin-user-group";
-	}
-	
-	@PreAuthorize("hasRole('ADMIN')")
-	@RequestMapping(value = "/admin/groups/new.html", method = RequestMethod.GET)
-	public String displayGroup(Model model,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		// display menu
-		setMenu(model, request);
-		
-		GroupType[] groupTypes = GroupType.values();
-		List<String> groups = new ArrayList<String>();
+            if (GroupType.ADMIN.name().equals(group.getGroupType().name())) {
+                resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
+                resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+                String returnString = resp.toJSONString();
+                return new ResponseEntity<String>(returnString, httpHeaders, HttpStatus.OK);
+            }
 
-		for(GroupType t : groupTypes) {
-			if(GroupType.ADMIN.name() != t.name()) {
-				groups.add(t.name());
-			}
-		}
-		GroupDetails group = new GroupDetails();
-		Group g = new Group();
-		group.setGroup(g);
-		group.setTypes(groups);
-		model.addAttribute("group", group);
-		
+            groupService.delete(group);
 
-		return "admin-user-group";
-	}
+            resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 
 
+        } catch (Exception e) {
+            LOGGER.error("Error while deleting group", e);
+            resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+            resp.setErrorMessage(e);
+        }
 
-	@PreAuthorize("hasRole('ADMIN')")
-	@RequestMapping(value = "/admin/groups/groups.html", method = RequestMethod.GET)
-	public String displayGroups(Model model, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+        String returnString = resp.toJSONString();
+        return new ResponseEntity<String>(returnString, httpHeaders, HttpStatus.OK);
+    }
 
-		setMenu(model, request);
-		List<Group> groups = groupService.listGroup(GroupType.ADMIN);
-		model.addAttribute("groups", groups);
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value = "/admin/group/save.html", method = RequestMethod.POST)
+    public String save(@Valid @ModelAttribute("group") GroupDetails group, BindingResult result, Locale locale, Model model,
+                       HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        // display menu
+        setMenu(model, request);
 
-		return "admin-user-groups";
-	}
+        GroupType[] groupTypes = GroupType.values();
+        List<String> groups = new ArrayList<String>();
 
-	
-	@PreAuthorize("hasRole('ADMIN')")
-	@RequestMapping(value = "/admin/groups/paging.html", method = RequestMethod.POST)
-	public @ResponseBody
-	ResponseEntity<String> pageGroups(HttpServletRequest request,
-			HttpServletResponse response, Locale locale) {
+        for (GroupType t : groupTypes) {
+            if (GroupType.ADMIN.name() != t.name()) {
+                groups.add(t.name());
+            }
+        }
 
-		AjaxResponse resp = new AjaxResponse();
-		try {
+        //check if already exists
+        Group g = null;
+        if (group.getGroup().getId() != null) {
+            Group gid = groupService.getById(group.getGroup().getId());
+            if (gid != null && !gid.getGroupName().equals(group.getGroup().getGroupName())) {
+                g = groupService.findByName(group.getGroup().getGroupName());
+            }
+        } else {
+            g = groupService.findByName(group.getGroup().getGroupName());
+        }
 
-				List<Group> groups = groupService.list();
+        if (g != null) {
+            ObjectError error = new ObjectError("group.groupName", messages.getMessage("message.name.exist", locale));
+            result.addError(error);
+            model.addAttribute("error", "error");
+        } else {
+            groupService.save(group.getGroup());
+            model.addAttribute("success", "success");
+        }
 
-				for(Group group : groups) {
-					Map entry = new HashMap();
-					entry.put("groupId", group.getId());
-					entry.put("name", group.getGroupName());
-					entry.put("type", group.getGroupType().name());
+        GroupDetails groupDetails = new GroupDetails();
+        groupDetails.setGroup(group.getGroup());
+        groupDetails.setTypes(groups);
 
-					StringBuilder key = new StringBuilder().append("security.group.description.").append(group.getGroupName());
-					try {
-					
-						String message =  messages.getMessage(key.toString(), locale);
-						entry.put("description",message);
-					
-					} catch(Exception noLabelException) {
-						LOGGER.error("No label found for key [" + key.toString() + "]");
-					}
-					
-					
-					
+        model.addAttribute("group", groupDetails);
 
-					resp.addDataEntry(entry);
-				}
+        return "admin-user-group";
+    }
 
-			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_SUCCESS);
-		
-		} catch (Exception e) {
-			LOGGER.error("Error while paging permissions", e);
-			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
-			resp.setErrorMessage(e);
-		}
-		
-		String returnString = resp.toJSONString();
-		final HttpHeaders httpHeaders= new HttpHeaders();
-	    httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
-		return new ResponseEntity<String>(returnString,httpHeaders,HttpStatus.OK);
-	}
-	
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value = "/admin/groups/new.html", method = RequestMethod.GET)
+    public String displayGroup(Model model,
+                               HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        // display menu
+        setMenu(model, request);
 
-	private void setMenu(Model model, HttpServletRequest request)
-			throws Exception {
+        GroupType[] groupTypes = GroupType.values();
+        List<String> groups = new ArrayList<String>();
 
-		// display menu
-		Map<String, String> activeMenus = new HashMap<String, String>();
-		activeMenus.put("profile", "profile");
-		activeMenus.put("security", "security");
+        for (GroupType t : groupTypes) {
+            if (GroupType.ADMIN.name() != t.name()) {
+                groups.add(t.name());
+            }
+        }
 
-		@SuppressWarnings("unchecked")
-		Map<String, Menu> menus = (Map<String, Menu>) request
-				.getAttribute("MENUMAP");
+        GroupDetails group = new GroupDetails();
+        Group g = new Group();
+        group.setGroup(g);
+        group.setTypes(groups);
+        model.addAttribute("group", group);
 
-		Menu currentMenu = menus.get("profile");
-		model.addAttribute("currentMenu", currentMenu);
-		model.addAttribute("activeMenus", activeMenus);
-		//
+        return "admin-user-group";
+    }
 
-	}
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value = "/admin/groups/groups.html", method = RequestMethod.GET)
+    public String displayGroups(Model model, HttpServletRequest request,
+                                HttpServletResponse response) throws Exception {
+
+        setMenu(model, request);
+        List<Group> groups = groupService.listGroup(GroupType.ADMIN);
+        model.addAttribute("groups", groups);
+
+        return "admin-user-groups";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value = "/admin/groups/paging.html", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity<String> pageGroups(HttpServletRequest request,
+                                      HttpServletResponse response, Locale locale) {
+        AjaxResponse resp = new AjaxResponse();
+        try {
+            List<Group> groups = groupService.list();
+            for (Group group : groups) {
+                Map<String, String> entry = new HashMap<>();
+                entry.put("groupId", group.getId() + "");
+                entry.put("name", group.getGroupName());
+                entry.put("type", group.getGroupType().name());
+
+                StringBuilder key = new StringBuilder().append("security.group.description.").append(group.getGroupName());
+                try {
+                    String message = messages.getMessage(key.toString(), locale);
+                    entry.put("description", message);
+                } catch (Exception noLabelException) {
+                    LOGGER.error("No label found for key [" + key.toString() + "]");
+                }
+                resp.addDataEntry(entry);
+            }
+
+            resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_SUCCESS);
+        } catch (Exception e) {
+            LOGGER.error("Error while paging permissions", e);
+            resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+            resp.setErrorMessage(e);
+        }
+
+        String returnString = resp.toJSONString();
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        return new ResponseEntity<String>(returnString, httpHeaders, HttpStatus.OK);
+    }
+
+    private void setMenu(Model model, HttpServletRequest request) throws Exception {
+        // display menu
+        Map<String, String> activeMenus = new HashMap<>();
+        activeMenus.put("profile", "profile");
+        activeMenus.put("security", "security");
+
+        @SuppressWarnings("unchecked")
+        Map<String, Menu> menus = (Map<String, Menu>) request.getAttribute("MENUMAP");
+
+        Menu currentMenu = menus.get("profile");
+        model.addAttribute("currentMenu", currentMenu);
+        model.addAttribute("activeMenus", activeMenus);
+    }
 }

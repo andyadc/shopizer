@@ -12,15 +12,15 @@ import java.util.List;
 @Configuration
 public class ShopizerPropertiesConfig {
 
-  @Bean
-  public List<String> templates() {
-    return Arrays.asList("bootstrap", "generic", "exoticamobilia", "december");
-  }
+    @Bean
+    public List<String> templates() {
+        return Arrays.asList("bootstrap", "generic", "exoticamobilia", "december");
+    }
 
-  @Bean(name = "shopizer-properties")
-  public PropertiesFactoryBean mapper() {
-    PropertiesFactoryBean bean = new PropertiesFactoryBean();
-    bean.setLocation(new ClassPathResource("shopizer-properties.properties"));
-    return bean;
-  }
+    @Bean(name = "shopizer-properties")
+    public PropertiesFactoryBean mapper() {
+        PropertiesFactoryBean bean = new PropertiesFactoryBean();
+        bean.setLocation(new ClassPathResource("shopizer-properties.properties"));
+        return bean;
+    }
 }

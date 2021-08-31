@@ -9,35 +9,29 @@ import java.util.List;
 
 /**
  * Wrapper to ease admin jstl
- * @author carlsamson
- *
  */
 public class Category implements Serializable {
 
-  /**
-   * 
-   */
-  private static final long serialVersionUID = 1L;
-  
-  private com.salesmanager.core.model.catalog.category.Category category;
-  
-  @Valid
-  private List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
+    private static final long serialVersionUID = 1L;
 
-  public com.salesmanager.core.model.catalog.category.Category getCategory() {
-    return category;
-  }
+    private com.salesmanager.core.model.catalog.category.Category category;
 
-  public void setCategory(com.salesmanager.core.model.catalog.category.Category category) {
-    this.category = category;
-  }
+    @Valid
+    private List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
 
-  public List<CategoryDescription> getDescriptions() {
-    return descriptions;
-  }
+    public com.salesmanager.core.model.catalog.category.Category getCategory() {
+        return category;
+    }
 
-  public void setDescriptions(List<CategoryDescription> descriptions) {
-    this.descriptions = descriptions;
-  }
+    public void setCategory(com.salesmanager.core.model.catalog.category.Category category) {
+        this.category = category;
+    }
 
+    public List<CategoryDescription> getDescriptions() {
+        return descriptions;
+    }
+
+    public void setDescriptions(List<CategoryDescription> descriptions) {
+        this.descriptions = descriptions;
+    }
 }

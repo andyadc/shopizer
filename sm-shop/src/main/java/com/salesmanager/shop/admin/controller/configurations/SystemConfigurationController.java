@@ -23,61 +23,56 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-
-
 @Controller
 public class SystemConfigurationController {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConfigurationController.class);
-	@Inject
-	Environment env;
-	@Inject
-	private MerchantConfigurationService merchantConfigurationService;
-	
-	@PreAuthorize("hasRole('AUTH')")
-	@RequestMapping(value="/admin/configuration/system.html", method=RequestMethod.GET)
-	public String displaySysyemConfgurations(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		setMenu(model, request);
-		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		MerchantConfig merchantConfiguration = merchantConfigurationService.getMerchantConfig(store);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SystemConfigurationController.class);
 
-		if(merchantConfiguration==null) {
-			merchantConfiguration = new MerchantConfig();
-		}
-		
-		model.addAttribute("store", store);
-		model.addAttribute("configuration",merchantConfiguration);
-		return com.salesmanager.shop.admin.controller.ControllerConstants.Tiles.Configuration.system;
-	}
-	
-	@PreAuthorize("hasRole('AUTH')")
-	@RequestMapping(value="/admin/configuration/saveSystemConfiguration.html", method=RequestMethod.POST)
-	public String saveSystemConfigurations(@ModelAttribute("configuration") MerchantConfig merchantConfiguration, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception
-	{
-		setMenu(model, request);
-		
-		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		merchantConfigurationService.saveMerchantConfig(merchantConfiguration, store);
-		model.addAttribute("success","success");
-		model.addAttribute("store", store);
-		model.addAttribute("configuration",merchantConfiguration);
-		return com.salesmanager.shop.admin.controller.ControllerConstants.Tiles.Configuration.system;
-		
-	}
+    @Inject
+    Environment env;
+    @Inject
+    private MerchantConfigurationService merchantConfigurationService;
 
+    @PreAuthorize("hasRole('AUTH')")
+    @RequestMapping(value = "/admin/configuration/system.html", method = RequestMethod.GET)
+    public String displaySysyemConfgurations(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-	private void setMenu(Model model, HttpServletRequest request) throws Exception {
-		
-		Map<String,String> activeMenus = new HashMap<String,String>();
-		activeMenus.put("configuration", "configuration");
-		activeMenus.put("system-configurations", "system-configurations");
-		
-		@SuppressWarnings("unchecked")
-		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
-		
-		Menu currentMenu = menus.get("configuration");
-		model.addAttribute("currentMenu",currentMenu);
-		model.addAttribute("activeMenus",activeMenus);
-	}
+        setMenu(model, request);
+        MerchantStore store = (MerchantStore) request.getAttribute(Constants.ADMIN_STORE);
+        MerchantConfig merchantConfiguration = merchantConfigurationService.getMerchantConfig(store);
+
+        if (merchantConfiguration == null) {
+            merchantConfiguration = new MerchantConfig();
+        }
+
+        model.addAttribute("store", store);
+        model.addAttribute("configuration", merchantConfiguration);
+        return com.salesmanager.shop.admin.controller.ControllerConstants.Tiles.Configuration.system;
+    }
+
+    @PreAuthorize("hasRole('AUTH')")
+    @RequestMapping(value = "/admin/configuration/saveSystemConfiguration.html", method = RequestMethod.POST)
+    public String saveSystemConfigurations(@ModelAttribute("configuration") MerchantConfig merchantConfiguration, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+        setMenu(model, request);
+
+        MerchantStore store = (MerchantStore) request.getAttribute(Constants.ADMIN_STORE);
+        merchantConfigurationService.saveMerchantConfig(merchantConfiguration, store);
+        model.addAttribute("success", "success");
+        model.addAttribute("store", store);
+        model.addAttribute("configuration", merchantConfiguration);
+        return com.salesmanager.shop.admin.controller.ControllerConstants.Tiles.Configuration.system;
+    }
+
+    private void setMenu(Model model, HttpServletRequest request) throws Exception {
+        Map<String, String> activeMenus = new HashMap<String, String>();
+        activeMenus.put("configuration", "configuration");
+        activeMenus.put("system-configurations", "system-configurations");
+
+        @SuppressWarnings("unchecked")
+        Map<String, Menu> menus = (Map<String, Menu>) request.getAttribute("MENUMAP");
+
+        Menu currentMenu = menus.get("configuration");
+        model.addAttribute("currentMenu", currentMenu);
+        model.addAttribute("activeMenus", activeMenus);
+    }
 }

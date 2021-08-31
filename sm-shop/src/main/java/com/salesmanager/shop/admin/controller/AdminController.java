@@ -19,8 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-
-
 @Controller
 public class AdminController {
 	
@@ -40,8 +38,7 @@ public class AdminController {
 		activeMenus.put("home", "home");
 		
 		model.addAttribute("activeMenus",activeMenus);
-		
-		
+
 		//get store information
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
@@ -66,10 +63,6 @@ public class AdminController {
 	
 	@RequestMapping( value=Constants.ADMIN_URI , method=RequestMethod.GET)
 	public String displayStoreLanding(HttpServletRequest request, HttpServletResponse response) {
-
 		return "redirect:" + Constants.ADMIN_URI + Constants.SLASH;
 	}
-
-
-
 }
