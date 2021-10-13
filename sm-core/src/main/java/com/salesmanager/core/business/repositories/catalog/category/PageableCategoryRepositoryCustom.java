@@ -8,5 +8,4 @@ import org.springframework.data.domain.Pageable;
 public interface PageableCategoryRepositoryCustom {
 	
 	Page<Category> listByStore(Integer storeId, Integer languageId, String name, Pageable pageable);
-
 }

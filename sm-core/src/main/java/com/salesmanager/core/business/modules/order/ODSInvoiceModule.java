@@ -12,10 +12,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 
-
-
-
-
 public class ODSInvoiceModule implements InvoiceModule {
 	
 	private final static String INVOICE_TEMPLATE = "templates/invoice/Invoice";
@@ -46,7 +42,6 @@ public class ODSInvoiceModule implements InvoiceModule {
 		// TODO Auto-generated method stub
 		throw new Exception("Not implemented");
 	}
-	
 
 /*	@Override
 	public ByteArrayOutputStream createInvoice(MerchantStore store, Order order, Language language) throws Exception {

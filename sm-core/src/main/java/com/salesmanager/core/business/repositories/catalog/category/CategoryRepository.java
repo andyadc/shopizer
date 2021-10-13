@@ -7,9 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-
 public interface CategoryRepository extends JpaRepository<Category, Long>, CategoryRepositoryCustom {
-	
 
 	@Query("select c from Category c left join fetch c.descriptions cd join fetch cd.language cdl join fetch c.merchantStore cm where cd.seUrl like ?2 and cm.id = ?1 order by c.sortOrder asc")
 	List<Category> listByFriendlyUrl(Integer storeId, String friendlyUrl);
@@ -79,7 +77,4 @@ public interface CategoryRepository extends JpaRepository<Category, Long>, Categ
 	
 	@Query("select count(distinct c) from Category as c where c.merchantStore.id=?1")
 	int count(Integer storeId);
-
-
-	
 }

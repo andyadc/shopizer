@@ -47,7 +47,8 @@ public class SchemaConstant {
     /**
      * Locale per country iso codes
      */
-    public static final HashMap<String, Locale> LOCALES = new HashMap<String, Locale>();
+    public static final HashMap<String, Locale> LOCALES = new HashMap<>();
+
     /**
      * Currency codes with name
      */
@@ -268,7 +269,5 @@ public class SchemaConstant {
         CURRENCY_MAP.put("YER", "Yemeni Rial");
         CURRENCY_MAP.put("ZMK", "Zambian Kwacha");
         //CURRENCY_MAP.put("ZWL", "Zimbabwe Dollar");
-
-
     }
 }

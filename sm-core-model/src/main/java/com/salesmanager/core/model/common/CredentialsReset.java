@@ -31,5 +31,4 @@ public class CredentialsReset {
 	public void setCredentialsRequestExpiry(Date credentialsRequestExpiry) {
 		this.credentialsRequestExpiry = credentialsRequestExpiry;
 	}
-
 }

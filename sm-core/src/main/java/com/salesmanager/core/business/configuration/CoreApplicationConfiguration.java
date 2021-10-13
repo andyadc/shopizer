@@ -14,9 +14,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaRepositories(basePackages = "com.salesmanager.core.business.repositories")
 @EntityScan(basePackages = "com.salesmanager.core.model")
 @EnableTransactionManagement
-@ImportResource("classpath:/spring/shopizer-core-context.xml")
+@ImportResource("classpath*:/spring/shopizer-core-context.xml")
 public class CoreApplicationConfiguration {
-
-
-
 }

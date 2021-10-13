@@ -22,9 +22,6 @@ import javax.persistence.TableGenerator;
 @Table(name = "ORDER_ATTRIBUTE")
 public class OrderAttribute extends SalesManagerEntity<Long, OrderAttribute> {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id

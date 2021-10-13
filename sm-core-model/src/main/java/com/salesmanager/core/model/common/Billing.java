@@ -21,13 +21,11 @@ public class Billing {
 	@Column(name = "BILLING_FIRST_NAME", length = 64, nullable = false)
 	private String firstName;
 
-
 	@Column(name = "BILLING_COMPANY", length = 100)
 	private String company;
 
 	@Column(name = "BILLING_STREET_ADDRESS", length = 256)
 	private String address;
-
 
 	@Column(name = "BILLING_CITY", length = 100)
 	private String city;
@@ -47,16 +45,13 @@ public class Billing {
 	@Column(name = "LATITUDE", length = 100)
 	private String latitude;
 
-
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Country.class)
 	@JoinColumn(name = "BILLING_COUNTRY_ID", nullable = false)
 	private Country country;
 
-
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Zone.class)
 	@JoinColumn(name = "BILLING_ZONE_ID", nullable = true)
 	private Zone zone;
-
 
 	public String getCompany() {
 		return company;
@@ -153,5 +148,4 @@ public class Billing {
 	public void setLatitude(String latitude) {
 		this.latitude = latitude;
 	}
-
 }
