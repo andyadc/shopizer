@@ -25,22 +25,17 @@ public class AjaxPageableResponse extends AjaxResponse {
 	private int totalRow;
 	
 	protected String getPageInfo() {
-		
 		StringBuilder returnString = new StringBuilder();
 		returnString.append("\"startRow\"").append(":");
 		returnString.append(this.startRow).append(",");
 		returnString.append("\"endRow\"").append(":").append(this.endRow).append(",");
 		returnString.append("\"totalRows\"").append(":").append(super.getData().size());
 		return returnString.toString();
-		
 	}
-	
-	
-	
-	@SuppressWarnings("unchecked")
+
+    @SuppressWarnings("unchecked")
 	@Override
 	public String toJSONString() {
-		
 		StringBuilder returnString = new StringBuilder();
 		
 		returnString.append(getJsonInfo()).append(",");
